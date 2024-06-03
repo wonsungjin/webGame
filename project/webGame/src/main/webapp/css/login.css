@@ -1,0 +1,115 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1a1a1a;
+    color: #fff;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 80px;
+    height: auto;
+}
+
+.title {
+    margin: 0;
+    font-size: 24px;
+}
+
+.login-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.email-input {
+    display: flex;
+    align-items: center;
+}
+
+.email-input input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    background: #3a3a3a;
+    color: #fff;
+}
+
+.email-input span {
+    padding: 10px;
+    background: #3a3a3a;
+    color: #fff;
+    border: none;
+    border-radius: 0 4px 4px 0;
+}
+
+.email-input select {
+    padding: 10px;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    background: #3a3a3a;
+    color: #fff;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background: #3a3a3a;
+    color: #fff;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    background: #f39c12;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #e67e22;
+}
+
+p {
+    text-align: center;
+}
+
+p a {
+    color: #f39c12;
+    text-decoration: none;
+}
+
+p a:hover {
+    text-decoration: underline;
+}
