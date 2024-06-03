@@ -1,3 +1,0 @@
-INDEX VERSION 1.134
-C:\Users\WD\Desktop\project\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\696448274.index
-\webGame\src\main\java
