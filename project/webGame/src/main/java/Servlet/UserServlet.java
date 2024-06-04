@@ -30,34 +30,52 @@ public class UserServlet extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
-        // 폼 데이터 수집
-        String nickname = request.getParameter("nickname");
-        String userid = request.getParameter("id");
-        String useremail = request.getParameter("userid");
-        String emailDomain = request.getParameter("emailDomain");
-        String otherDomain = request.getParameter("otherDomain");
-        String password = request.getParameter("password");
+        // form 데이터
+        String pagecode = request.getParameter("pagecode");
 
-        // 이메일 도메인 결정
-        String email = otherDomain != null && !otherDomain.isEmpty() ? useremail + "@" + otherDomain : useremail + "@" + emailDomain;
+        // 회원가입 처리
+        if ("register".equals(pagecode)) {
+            String nickname = request.getParameter("nickname");
+            String userid = request.getParameter("id");
+            String useremail = request.getParameter("userid");
+            String emailDomain = request.getParameter("emailDomain");
+            String otherDomain = request.getParameter("otherDomain");
+            String password = request.getParameter("password");
 
-        // UserVO 객체 생성
-        UserVO uvo = new UserVO();
-        uvo.setUserid(userid);
-        uvo.setUsername(nickname);
-        uvo.setPassword(password);
-        uvo.setUseremail(email);
+            // 이메일 도메인 결정
+            String email = otherDomain != null && !otherDomain.isEmpty() ? useremail + "@" + otherDomain
+                    : useremail + "@" + emailDomain;
 
-        // UserDAO를 사용하여 데이터베이스에 사용자 삽입
-        UserDAO userDAO = new UserDAO();
-        int result = userDAO.userInsert(uvo);
+            // UserVO 생성
+            UserVO uvo = new UserVO();
+            uvo.setUserid(userid);
+            uvo.setUsername(nickname);
+            uvo.setPassword(password);
+            uvo.setUseremail(email);
 
-        if (result > 0) {
-            // 회원가입 성공
-            response.sendRedirect("login.jsp");
-        } else {
-            // 회원가입 실패
-            response.sendRedirect("register.jsp");
+            // UserDAO사용하여 db에 삽입
+            UserDAO userDAO = new UserDAO();
+            int result = userDAO.userInsert(uvo);
+
+            if (result > 0) {
+                // 회원가입 성공
+                response.sendRedirect("login.jsp");
+            } else {
+                // 회원가입 실패
+                response.sendRedirect("register.jsp");
+            }
         }
+        // 로그인 처리
+        else if ("login".equals(pagecode)) {
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+
+            // 여기부터에 로그인 처리 코드 작성
+            
+            // 유효성검사
+
+            // 로그인 성공 시 세션 처리
+        }
+        
     }
 }
