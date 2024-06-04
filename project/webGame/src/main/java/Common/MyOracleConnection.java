@@ -12,7 +12,7 @@ import oracle.jdbc.pool.OracleConnectionPoolDataSource;
 
 public class MyOracleConnection {
 
-	private static final String DB_URL = "jdbc:oracle:thin:@127.0.0.1:1521:XE";
+	private static final String DB_URL = "jdbc:oracle:thin:@127.0.0.1:1521:xe";
 	private static final String DB_ID = "it";
 	private static final String DB_PW = "0000";
 	
