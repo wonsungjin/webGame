@@ -22,31 +22,30 @@
 			<h2>Register</h2>
 			<form id="registerForm" method="post" action="UserServlet">
 				<div class="input-group">
-					<label for="nickname">Nickname</label> <input type="text"
-						id="nickname" name="nickname" required>
+					<label for="nickname">Nickname</label> 
+					<input type="text" id="nickname" name="nickname" required>
 				</div>
 				<div class="input-group">
-					<label for="id">ID</label> <input type="text" id="id" name="id"
-						required>
+					<label for="id">ID</label> 
+					<input type="text" id="id" name="id" required>
 				</div>
 				<div class="input-group">
 					<label for="email">Email</label>
 					<div class="email-input">
-						<input type="text" id="userid" name="userid"
-							placeholder="Username" required> <span>@</span> <select
-							id="emailDomain" name="emailDomain">
+						<input type="text" id="userid" name="userid" placeholder="Username" required> 
+						<span>@</span> 
+						<select id="emailDomain" name="emailDomain" onchange="checkOther()">
 							<option value="gmail.com">gmail.com</option>
 							<option value="naver.com">naver.com</option>
 							<option value="hanmail.net">hanmail.net</option>
 							<option value="other">Other</option>
 						</select>
 					</div>
-					<input type="text" id="otherDomain" name="otherDomain"
-						placeholder="Other Domain" style="display: none;">
+					<input type="text" id="otherDomain" name="otherDomain" placeholder="Other Domain" style="display: none;">
 				</div>
 				<div class="input-group">
-					<label for="password">Password</label> <input type="password"
-						id="password" name="password" required>
+					<label for="password">Password</label> 
+					<input type="password" id="password" name="password" required>
 				</div>
 				<!-- Hidden input으로 pagecode부분 -->
 				<input type="hidden" name="pagecode" value="register">
