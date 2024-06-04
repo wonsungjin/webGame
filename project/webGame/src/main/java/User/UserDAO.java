@@ -33,7 +33,7 @@ public class UserDAO {
 			String sql = "insert into users values(users_seq.nextval,?,?,?,?,sysdate,'u')";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, uvo.getUserid());
-			pstmt.setString(2, uvo.getUsername());
+			pstmt.setString(2, uvo.getPassword());
 			pstmt.setString(3, uvo.getUseremail());
 			pstmt.setString(4, uvo.getPassword());
 			insertRows = pstmt.executeUpdate();
@@ -68,10 +68,7 @@ public class UserDAO {
 
 			if (rs.next()) {
 				uvo = new UserVO();
-				uvo.setUserid(rs.getString("userid"));
-//				uvo.setUname(rs.getString("uname"));
-//				uvo.setGrade(rs.getString("grade"));
-//				uvo.setLoginCheck(true);
+				uvo.setUsername(userid);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

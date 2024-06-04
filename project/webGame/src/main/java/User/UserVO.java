@@ -12,7 +12,8 @@ import lombok.ToString;
 @Getter
 @ToString
 
-public class UserVO {
+public class UserVO 
+{
 	private int seq;
 	private String userid;
 	private String username;
@@ -20,6 +21,5 @@ public class UserVO {
 	private String useremail;
 	private String created_date;
 	private String updated_date;
-	
 	//추가부분
 }
