@@ -4,77 +4,140 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.List;
 
 import Common.MyOracleConnection;
 
 public class UserDAO {
 
-	public int userInsert(UserVO uvo) {
-		MyOracleConnection moc = new MyOracleConnection(); // 클래스 분리시켜놓아서 인스턴스 생성해서 사용
-		DataSource ds = null;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		int insertRows = 0;
+    /**
+     * 
+     * @param UserVO를 받아서 Insert 쿼리문 실행
+     * @return 몇 건을 삽입하였는지 정수로 반환
+     */
+    public int userInsert(UserVO uvo) {
+        int insertRows = 0;
 
-		// 파라미터가 잘 넘어왔는지 확인용 코드 (seq=0, regdate=null)
-		System.out.println(uvo.toString());
+        try (Connection conn = new MyOracleConnection().myOracleDataSource().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(
+                 "INSERT INTO users (user_seq, userid, username, password, email, created_date, updated_date) " +
+                 "VALUES (users_seq.NEXTVAL, ?, ?, ?, ?, SYSDATE, SYSDATE)")) {
 
-		try {
-			// conn = moc.oracleConn();
-			ds = moc.myOracleDataSource();
-			conn = ds.getConnection();
-			if (conn != null)
-				System.out.println("conn ok ");
-			else
-				System.out.println("conn fail ");
+            pstmt.setString(1, uvo.getUserid());
+            pstmt.setString(2, uvo.getUsername());
+            pstmt.setString(3, uvo.getPassword());
+            pstmt.setString(4, uvo.getUseremail());
+            insertRows = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // 추가적인 예외 처리
+        }
+        return insertRows;
+    }
 
-			String sql = "insert into users values(users_seq.nextval,?,?,?,?,sysdate,'u')";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, uvo.getUserid());
-			pstmt.setString(2, uvo.getPassword());
-			pstmt.setString(3, uvo.getUseremail());
-			pstmt.setString(4, uvo.getPassword());
-			insertRows = pstmt.executeUpdate();
+    /**
+     * 모든 사용자 조회
+     * 
+     * @return 사용자 리스트
+     */
+    public List<UserVO> userSelect() {
+        List<UserVO> userList = new ArrayList<>();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return insertRows;
-	}
+        try (Connection conn = new MyOracleConnection().myOracleDataSource().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM users");
+             ResultSet rs = pstmt.executeQuery()) {
 
-	public UserVO userLogin(String userid, String passwd) {
+            while (rs.next()) {
+                UserVO uvo = new UserVO();
+                uvo.setUserid(rs.getString("userid"));
+                uvo.setUsername(rs.getString("username"));
+                uvo.setPassword(rs.getString("password"));
+                uvo.setUseremail(rs.getString("email"));
+                userList.add(uvo);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // 추가적인 예외 처리
+        }
 
-		boolean userCheck = false;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		DataSource ds = null;
-		MyOracleConnection moc = new MyOracleConnection(); // 클래스 분리시켜놓아서 인스턴스 생성해서 사용
-		UserVO uvo = null;
+        return userList;
+    }
 
-		try {
-			// ---------------DBCP를 사용한 DB 연결 -----------------------
-			// conn = moc.oracleConn();
-			ds = moc.myOracleDataSource();
-			conn = ds.getConnection();
+    /**
+     * @param user_seq 사용자 한명 조회
+     * 
+     * @return 사용자 VO 객체
+     */
+    public UserVO userSelectOne(int seq) {
+        UserVO uvo = null;
 
-			String sql = "select userid, uname, grade from users where userid=? and passwd=?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, userid);
-			pstmt.setString(2, passwd);
-			rs = pstmt.executeQuery();
+        try (Connection conn = new MyOracleConnection().myOracleDataSource().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM users WHERE user_seq = ?")) {
 
-			if (rs.next()) {
-				uvo = new UserVO();
-				uvo.setUsername(userid);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			moc.oracleClose(conn, pstmt, rs);
-		}
-		return uvo;
-	}
+            pstmt.setInt(1, seq);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    uvo = new UserVO();
+                    uvo.setUserid(rs.getString("userid"));
+                    uvo.setUsername(rs.getString("username"));
+                    uvo.setPassword(rs.getString("password"));
+                    uvo.setUseremail(rs.getString("email"));
+                    uvo.setUpdated_date(rs.getString("updated_date"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // 추가적인 예외 처리
+        }
+
+        return uvo;
+    }
+
+    /**
+     * 사용자 삭제
+     * 
+     * @param user_seq 삭제할 사용자의 seq
+     * @return 삭제된 행 수
+     */
+    public int userDelete(int seq) {
+        int deleteRows = 0;
+
+        try (Connection conn = new MyOracleConnection().myOracleDataSource().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("DELETE FROM users WHERE user_seq = ?")) {
+
+            pstmt.setInt(1, seq);
+            deleteRows = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // 추가적인 예외 처리
+        }
+        return deleteRows;
+    }
+
+    /**
+     * 사용자 수정
+     * 
+     * @param uvo 수정할 사용자 정보를 담고 있는 UserVO 객체
+     * @return 수정된 행 수
+     */
+    public int userUpdate(UserVO uvo) {
+        int updateRows = 0;
+
+        try (Connection conn = new MyOracleConnection().myOracleDataSource().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(
+                 "UPDATE users SET username = ?, password = ?, email = ? WHERE userid = ?")) {
+
+            pstmt.setString(1, uvo.getUsername());
+            pstmt.setString(2, uvo.getPassword());
+            pstmt.setString(3, uvo.getUseremail());
+            pstmt.setString(4, uvo.getUserid());
+            updateRows = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // 추가적인 예외 처리
+        }
+        return updateRows;
+    }
 }
