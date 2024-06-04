@@ -107,84 +107,97 @@
 </div>
 <!-- Page section end -->
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-//수정 버튼에 클릭 이벤트 리스너 추가
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('.edit-comment').forEach(item => {
-        item.addEventListener('click', handleEdit);
-    });
+$(document).ready(function() {
+    // 수정 버튼에 클릭 이벤트 리스너 추가
+    $('.edit-comment').click(handleEdit);
 
     // 삭제 버튼에 클릭 이벤트 리스너 추가
-    document.querySelectorAll('.delete-comment').forEach(item => {
-        item.addEventListener('click', handleDelete);
-    });
+    $('.delete-comment').click(handleDelete);
 });
 
 function handleEdit(event) {
     // 클릭된 요소의 부모 요소를 찾아 댓글 내용을 수정 가능한 입력란으로 바꿈
-    const postContent = this.closest('.community-post').querySelector('.post-content');
-    const commentText = postContent.querySelector('p').textContent;
-    postContent.innerHTML = `
+    const postContent = $(this).closest('.community-post').find('.post-content');
+    const commentText = postContent.find('p').text();
+    postContent.html(`
         <textarea class="form-control no-resize">${commentText}</textarea>
         <button class="btn btn-primary btn-sm update-comment">수정하기</button>
         <button class="btn btn-danger btn-sm cancel-update">취소</button>
-    `;
+    `);
 
     // 수정하기 버튼에 클릭 이벤트 리스너 추가
-    const updateButton = postContent.querySelector('.update-comment');
-    updateButton.addEventListener('click', handleUpdate);
+    postContent.find('.update-comment').click(handleUpdate);
 
     // 취소 버튼에 클릭 이벤트 리스너 추가
-    const cancelButton = postContent.querySelector('.cancel-update');
-    cancelButton.addEventListener('click', handleCancel);
+    postContent.find('.cancel-update').click(handleCancel);
 }
 
 function handleUpdate(event) {
-    const updatedComment = this.parentElement.querySelector('textarea').value;
+    const updatedComment = $(this).siblings('textarea').val();
+    const postContent = $(this).parent();
+    const commentId = postContent.closest('.community-post').data('id');  // 댓글 ID 가져오기
+
     // 여기에 수정된 댓글 내용을 처리하는 코드를 추가하세요
-    console.log('수정된 댓글 내용:', updatedComment);
-    // 여기에서 수정된 내용을 저장 또는 처리한 후에, 이전 댓글 형식으로 다시 변경할 수 있습니다.
-    restoreOriginalComment(this.parentElement, updatedComment);
+    $.ajax({
+        url: '/update-comment',  // 서버의 수정 API 엔드포인트
+        type: 'POST',
+        data: { 
+            id: commentId,
+            comment: updatedComment 
+        },
+        success: function(response) {
+            console.log('수정된 댓글 내용:', updatedComment);
+            restoreOriginalComment(postContent, updatedComment);
+        },
+        error: function(error) {
+            console.error('댓글 수정에 실패했습니다:', error);
+        }
+    });
 }
 
 function handleCancel(event) {
-    const originalComment = this.parentElement.querySelector('p').textContent;
-    restoreOriginalComment(this.parentElement, originalComment);
+    const originalComment = $(this).siblings('textarea').val();
+    restoreOriginalComment($(this).parent(), originalComment);
 }
 
 function handleDelete(event) {
     if (confirm('진짜로 삭제하시겠습니까?')) {
-        // 삭제하기 버튼을 눌렀을 때의 동작을 여기에 추가하세요
-        const postContent = this.parentElement.closest('.community-post');
-        postContent.remove();
-        console.log('댓글이 삭제되었습니다.');
+        const postContent = $(this).closest('.community-post');
+        const commentId = postContent.data('id');  // 댓글 ID 가져오기
+        
+        $.ajax({
+            url: '/delete-comment',  // 서버의 삭제 API 엔드포인트
+            type: 'POST',
+            data: { id: commentId },  // 댓글 ID 또는 식별자를 전송
+            success: function(response) {
+                postContent.remove();
+                console.log('댓글이 삭제되었습니다.');
+            },
+            error: function(error) {
+                console.error('댓글 삭제에 실패했습니다:', error);
+            }
+        });
     }
-}
-function handleCancel(event) {
-    const originalComment = this.parentElement.querySelector('textarea').defaultValue;
-    restoreOriginalComment(this.parentElement, originalComment);
 }
 
 function restoreOriginalComment(postContent, commentText) {
-    postContent.innerHTML = `
+    postContent.html(`
         <h5>James Smith<span>님이 업데이트를 게시했습니다</span></h5>
         <div class="post-date">2018년 6월 21일</div>
         <p>${commentText}</p>
         <button class="btn btn-secondary btn-sm edit-comment" style="position: absolute; bottom: -50px; right: 5px;">수정</button>
         <button class="btn btn-danger btn-sm delete-comment" style="position: absolute; bottom: -50px; right: -45px;">삭제</button>
-    `;
+    `);
 
     // 수정 버튼에 클릭 이벤트 리스너 다시 추가
-    const editButton = postContent.querySelector('.edit-comment');
-    editButton.addEventListener('click', handleEdit);
+    postContent.find('.edit-comment').click(handleEdit);
 
     // 삭제 버튼에 클릭 이벤트 리스너 다시 추가
-    const deleteButton = postContent.querySelector('.delete-comment');
-    deleteButton.addEventListener('click', handleDelete);
+    postContent.find('.delete-comment').click(handleDelete);
 }
-
 </script>
-
 	<!--====== Javascripts & Jquery ======-->
 	<script src="js/jquery-3.2.1.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
