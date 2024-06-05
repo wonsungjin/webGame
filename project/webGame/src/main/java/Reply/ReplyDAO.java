@@ -33,10 +33,13 @@ public class ReplyDAO {
 				System.out.println("conn ok ");
 			else
 				System.out.println("conn fail ");
-			String sql = "insert into reply values(reply_seq.nextval,?,?,sysdate,sysdate)";
+			String sql ="INSERT INTO reply (reply_seq, user_seq, webgl, reply, grade, created_date, updated_date)\r\n"
+					+ "VALUES (reply_seq.NEXTVAL, ?, ?, ?, 5, SYSDATE, SYSDATE)"
+					;
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, rvo.getUser_seq());
-			pstmt.setString(2, rvo.getReply());
+			pstmt.setString(2, rvo.getWebGL());
+			pstmt.setString(3, rvo.getReply());
 			insertRows = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -182,7 +185,8 @@ public class ReplyDAO {
 					+ " u.created_date AS user_created_date, "
 					+ " u.updated_date AS user_updated_date"
 					+ " from reply r,gametable gt,users u "
-					+ " where r.webgl = ? and u.user_seq=r.user_seq";
+					+ " where r.webgl = ? and u.user_seq=r.user_seq"
+					+ " order by r.created_date asc";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1,webGLName);
 			rs=pstmt.executeQuery();
@@ -215,5 +219,30 @@ public class ReplyDAO {
 			moc.oracleClose(conn, pstmt);
 		}
 		return list;
+	}
+	public int replyDelete(int replySeq) {
+	    MyOracleConnection moc = new MyOracleConnection();
+	    DataSource ds = null;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    int deleteRows = 0;
+
+	    try {
+	        ds = moc.myOracleDataSource();
+	        conn = ds.getConnection();
+	        if (conn != null)
+	            System.out.println("conn ok ");
+	        else
+	            System.out.println("conn fail ");
+	        String sql = "DELETE FROM reply WHERE reply_seq = ?";
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, replySeq);
+	        deleteRows = pstmt.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        moc.oracleClose(conn, pstmt);
+	    }
+	    return deleteRows;
 	}
 }

@@ -49,6 +49,7 @@ public class GameServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String webGLName = request.getParameter("webGLName");
 		String pagecode = request.getParameter("pagecode");
+		ReplyDAO rdao = new ReplyDAO();
 		if(pagecode.equals("replyUpdate"))
 		{
 			String updatedDate = request.getParameter("updatedDate");
@@ -64,14 +65,34 @@ public class GameServlet extends HttpServlet {
 	        System.out.println("Created Date: " + createdDate);
 	        System.out.println("Reply Content: " + replyContent);
 			ReplyVO rvo = new ReplyVO();
-			ReplyDAO rdao = new ReplyDAO();
 			rvo.setReply(replyContent);
 			rvo.setUser_seq(Integer.parseInt(userSeq));
 			rvo.setReply_seq(Integer.parseInt(replySeq));
 			rvo.setCreated_date(createdDate);
 			rdao.replyUpdate(rvo);
 		}
-
-	}
+		else if(pagecode.equals("replyDelete"))
+		{
+			String replySeq = request.getParameter("replySeq");
+			System.out.println(replySeq);
+			rdao.replyDelete(Integer.parseInt(replySeq));
+		}
+		
+		else if(pagecode.equals("replyInsert"))
+		{
+	        String userSeq = request.getParameter("userSeq");
+	        String replyContent = request.getParameter("replyContent");
+	        
+	        // 추출한 데이터 사용 예시
+	        System.out.println("User Seq: " + userSeq);
+	        System.out.println("Reply Content: " + replyContent);
+	        System.out.println("WebGLName: " + webGLName);
+			ReplyVO rvo = new ReplyVO();
+			rvo.setReply(replyContent);
+			rvo.setUser_seq(Integer.parseInt(userSeq));
+			rvo.setWebGL(webGLName);
+			rdao.replyInsert(rvo);
+		}
+		}
 
 }
