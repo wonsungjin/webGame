@@ -46,6 +46,7 @@
                 checkDuplicate('email', email);
             });
 
+            // 중복 검사를 위한 AJAX 호출
             function checkDuplicate(field, value) {
                 $.post('CheckDuplicateFieldServlet', { field: field, value: value }, function(response) {
                     if (response === "DUPLICATE") {
@@ -56,6 +57,7 @@
                 });
             }
 
+            // 이메일 도메인 변경 시 처리
             $('#emailDomain').change(function() {
                 if ($(this).val() === "other") {
                     $('#otherDomain').show().attr('required', true);

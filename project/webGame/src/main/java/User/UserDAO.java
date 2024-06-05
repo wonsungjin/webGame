@@ -11,7 +11,12 @@ import Common.MyOracleConnection;
 
 public class UserDAO {
 
-    // 사용자 정보를 데이터베이스에 삽입합니다.
+    /**
+     * 사용자 정보를 데이터베이스에 삽입합니다.
+     *
+     * @param uvo 사용자 정보가 담긴 UserVO 객체
+     * @return 삽입된 행의 개수
+     */
     public int userInsert(UserVO uvo) {
         int insertRows = 0;
         String sql = "INSERT INTO users (user_seq, userid, username, password, email, created_date, updated_date) " +
@@ -32,7 +37,11 @@ public class UserDAO {
         return insertRows;
     }
 
-    // 모든 사용자 정보를 조회합니다.
+    /**
+     * 모든 사용자 정보를 조회합니다.
+     *
+     * @return 사용자 정보가 담긴 UserVO 객체의 리스트
+     */
     public List<UserVO> userSelect() {
         List<UserVO> userList = new ArrayList<>();
         String sql = "SELECT * FROM users";
@@ -59,7 +68,12 @@ public class UserDAO {
         return userList;
     }
 
-    // 특정 사용자의 정보를 조회합니다.
+    /**
+     * 특정 사용자의 정보를 조회합니다.
+     *
+     * @param user_seq 사용자 고유 번호
+     * @return 사용자 정보가 담긴 UserVO 객체
+     */
     public UserVO userSelectOne(int user_seq) {
         UserVO uvo = null;
         String sql = "SELECT * FROM users WHERE user_seq = ?";
@@ -71,7 +85,6 @@ public class UserDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                	System.out.println("음");
                     uvo = new UserVO();
                     uvo.setUser_seq(rs.getInt("user_seq"));
                     uvo.setUserid(rs.getString("userid"));
@@ -89,7 +102,12 @@ public class UserDAO {
         return uvo;
     }
 
-    // 특정 사용자의 정보를 삭제합니다.
+    /**
+     * 특정 사용자의 정보를 삭제합니다.
+     *
+     * @param user_seq 사용자 고유 번호
+     * @return 삭제된 행의 개수
+     */
     public int userDelete(int user_seq) {
         int deleteRows = 0;
         String sql = "DELETE FROM users WHERE user_seq = ?";
@@ -106,16 +124,18 @@ public class UserDAO {
         return deleteRows;
     }
 
-    // 사용자 정보 업데이트
+    /**
+     * 사용자 정보를 업데이트합니다.
+     *
+     * @param uvo 업데이트할 사용자 정보가 담긴 UserVO 객체
+     * @return 업데이트된 행의 개수
+     */
     public int userUpdate(UserVO uvo) {
         int updateRows = 0;
         String sql = "UPDATE users SET username = ?, password = ?, email = ?, userid = ?, updated_date = SYSDATE WHERE user_seq = ?";
 
         try (Connection conn = new MyOracleConnection().myOracleDataSource().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-             
-            // 값 확인을 위한 로그 추가
-            System.out.println("Updating user: " + uvo.toString());
 
             // 파라미터 설정
             pstmt.setString(1, uvo.getUsername());
@@ -126,7 +146,6 @@ public class UserDAO {
 
             // 쿼리 실행 및 결과 확인
             updateRows = pstmt.executeUpdate();
-            System.out.println("Rows updated: " + updateRows);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -134,7 +153,13 @@ public class UserDAO {
         return updateRows;
     }
 
-    // 사용자 로그인 검사
+    /**
+     * 사용자 로그인 검사
+     *
+     * @param userid 사용자 아이디
+     * @param password 사용자 비밀번호
+     * @return 로그인된 사용자 정보가 담긴 UserVO 객체
+     */
     public UserVO login(String userid, String password) {
         UserVO user = null;
         String sql = "SELECT * FROM users WHERE userid = ? AND password = ?";
@@ -164,7 +189,12 @@ public class UserDAO {
         return user;
     }
 
-    // 주어진 ID에 대해 중복을 검사합니다.
+    /**
+     * 주어진 ID에 대해 중복을 검사합니다.
+     *
+     * @param userid 사용자 아이디
+     * @return 중복 여부 (true: 중복됨, false: 중복되지 않음)
+     */
     public boolean checkDuplicateId(String userid) {
         boolean isDuplicate = false;
         String sql = "SELECT COUNT(*) FROM users WHERE userid = ?";
@@ -186,7 +216,12 @@ public class UserDAO {
         return isDuplicate;
     }
 
-    // 주어진 닉네임에 대해 중복을 검사합니다.
+    /**
+     * 주어진 닉네임에 대해 중복을 검사합니다.
+     *
+     * @param nickname 사용자 닉네임
+     * @return 중복 여부 (true: 중복됨, false: 중복되지 않음)
+     */
     public boolean checkDuplicateNickname(String nickname) {
         boolean isDuplicate = false;
         String sql = "SELECT COUNT(*) FROM users WHERE username = ?";
@@ -208,7 +243,12 @@ public class UserDAO {
         return isDuplicate;
     }
 
-    // 주어진 이메일에 대해 중복을 검사합니다.
+    /**
+     * 주어진 이메일에 대해 중복을 검사합니다.
+     *
+     * @param email 사용자 이메일
+     * @return 중복 여부 (true: 중복됨, false: 중복되지 않음)
+     */
     public boolean checkDuplicateEmail(String email) {
         boolean isDuplicate = false;
         String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
