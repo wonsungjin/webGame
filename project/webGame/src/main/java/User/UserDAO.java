@@ -71,6 +71,7 @@ public class UserDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
+                	System.out.println("음");
                     uvo = new UserVO();
                     uvo.setUser_seq(rs.getInt("user_seq"));
                     uvo.setUserid(rs.getString("userid"));
