@@ -61,12 +61,11 @@
 			</nav>
 		</div>
 	</header>
-
+<% String webGLName = (String) request.getAttribute("KEY_webGLName"); %>
 <section class="page-section community-page set-bg" data-setbg="img/community-bg.jpg">
     <!-- 유니티 WebGL 빌드를 추가하는 부분 -->
-   <iframe src="timeChase/index.html" frameborder="0" width="100%" height="1000" style="overflow: hidden; border: none;"></iframe>
-	<!-- Page info section -->
-
+    <iframe src="webGL/<%= webGLName %>/index.html" frameborder="0" width="100%" height="1000" style="overflow: hidden; border: none;"></iframe>
+    <!-- Page info section -->
 <style>
     .community-warp {
         width: 100%;

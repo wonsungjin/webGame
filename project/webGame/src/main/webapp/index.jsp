@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ page import="java.io.File" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <!DOCTYPE html>
 <html lang="zxx">
@@ -81,127 +84,60 @@
 	<!-- Page info section -->
 
 
-	<!-- Page section -->
-	<section class="page-section review-page spad">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-6">
-					<div class="review-item">
-						<div type="button" class="review-cover set-bg" data-setbg="img/gameLogo/timeChase.png" onclick="location.href='<%=request.getContextPath()%>/timeChase/index.html';">
-    <div class="score yellow">9.3</div>
-						</div>
-						<div class="review-text">
-							<h4>Time Chase</h4>
-							<div class="rating">
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star is-fade"></i>
-							</div>
-							<p>초록색 공이 파란색 장애물들을 상하좌우로 피하면서 120초를 버티는 게임입니다.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="review-item">
-						<div class="review-cover set-bg" data-setbg="img/review/6.jpg">
-							<div class="score yellow">9.3</div>
-						</div>
-						<div class="review-text">
-							<h4>Grand Theft Auto</h4>
-							<div class="rating">
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star is-fade"></i>
-							</div>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisc ing ipsum dolor sit ame. Lorem ipsum dolor sit amet, consectetur adipisc ing ipsum dolor sit ame.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="review-item">
-						<div class="review-cover set-bg" data-setbg="img/review/7.jpg">
-							<div class="score yellow">9.3</div>
-						</div>
-						<div class="review-text">
-							<h4>Avatar</h4>
-							<div class="rating">
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star is-fade"></i>
-							</div>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisc ing ipsum dolor sit ame. Lorem ipsum dolor sit amet, consectetur adipisc ing ipsum dolor sit ame.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="review-item">
-						<div class="review-cover set-bg" data-setbg="img/review/8.jpg">
-							<div class="score yellow">9.3</div>
-						</div>
-						<div class="review-text">
-							<h4>Anthem</h4>
-							<div class="rating">
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star is-fade"></i>
-							</div>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisc ing ipsum dolor sit ame. Lorem ipsum dolor sit amet, consectetur adipisc ing ipsum dolor sit ame.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="review-item">
-						<div class="review-cover set-bg" data-setbg="img/review/9.jpg">
-							<div class="score yellow">9.3</div>
-						</div>
-						<div class="review-text">
-							<h4>Cyberpunk 2077</h4>
-							<div class="rating">
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star is-fade"></i>
-							</div>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisc ing ipsum dolor sit ame. Lorem ipsum dolor sit amet, consectetur adipisc ing ipsum dolor sit ame.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="review-item">
-						<div class="review-cover set-bg" data-setbg="img/review/10.jpg">
-							<div class="score yellow">9.3</div>
-						</div>
-						<div class="review-text">
-							<h4>Spiderman</h4>
-							<div class="rating">
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star is-fade"></i>
-							</div>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisc ing ipsum dolor sit ame. Lorem ipsum dolor sit amet, consectetur adipisc ing ipsum dolor sit ame.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="text-center pt-4">
-				<button class="site-btn btn-sm">Load More</button>
-			</div>
-		</div>
-	</section>
-	<!-- Page section end -->
+<!-- Page section -->
+<section class="page-section review-page spad">
+    <div class="container">
+        <div class="row">
+            <% 
+                // 웹 애플리케이션의 실제 경로를 가져옵니다.
+                String webGLPath = application.getRealPath("/webGL");
+                File webGLDir = new File(webGLPath);
 
+                // webGL 폴더의 내용(디렉토리 이름)을 가져옵니다.
+                List<String> webGLNames = new ArrayList<>();
+                if (webGLDir.exists() && webGLDir.isDirectory()) {
+                    for (File file : webGLDir.listFiles()) {
+                        if (file.isDirectory()) {
+                            webGLNames.add(file.getName());
+                        }
+                    }
+                }
+                // 폴더 이름들을 출력합니다.
+                for (String webGLName : webGLNames) {
+            %>
+            <div class="col-md-6">
+                <div class="review-item">
+                    <div type="button" class="review-cover set-bg" data-setbg="img/gameLogo/<%= webGLName %>.png" onclick="redirectToCommunity('<%= webGLName %>');">
+                        <div class="score yellow">9.3</div>
+                    </div>
+                    <div class="review-text">
+                        <h4><%= webGLName %></h4>
+                        <div class="rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star is-fade"></i>
+                        </div>
+                        <p>초록색 공이 파란색 장애물들을 상하좌우로 피하면서 120초를 버티는 게임입니다.</p>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+        <div class="text-center pt-4">
+            <button class="site-btn btn-sm">Load More</button>
+        </div>
+    </div>
+</section>
+<!-- Page section end -->
 
+<script>
+    function redirectToCommunity(name) {
+        var url = '<%= request.getContextPath() %>/GameServlet?webGLName='+ encodeURIComponent(name);
+        window.location.href = url;
+    }
+</script>
 
 
 	<!--====== Javascripts & Jquery ======-->

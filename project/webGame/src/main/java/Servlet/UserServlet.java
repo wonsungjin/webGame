@@ -7,89 +7,75 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
+import User.UserDAO;
+import User.UserVO;
 
 @WebServlet("/UserServlet")
 public class UserServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public UserServlet() {
-		super();
-	}
+    public UserServlet() {
+        super();
+    }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		//로그아웃
-		HttpSession session = request.getSession();
-		//일괄
-		session.invalidate();
-		//세션 유효타임 0초
-		session.setMaxInactiveInterval(0);
-		//메인페이지로 이동
-		response.sendRedirect("index.jsp");
-	}
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // 로그아웃 처리
+        request.getSession().invalidate();
+        response.sendRedirect("index.jsp");
+    }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		System.out.println("포스트방식호출");
-		/*
-		String pagecode = request.getParameter("pagecode");
-		UserDAO dao = new UserDAO();
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
 
-		// -------------------register --------------------
-		if (pagecode.equals("P001")) {
-			// seq - user_seq.nextval
-			String userid = request.getParameter("userid");
-			String uname = request.getParameter("uname");
-			String email = request.getParameter("email");
-			String passwd = request.getParameter("passwd");
-			// regdate - sysdate
+        // form 데이터
+        String pagecode = request.getParameter("pagecode");
 
-			UserVO uvo = new UserVO();
-			uvo.setUserid(userid);
-			uvo.setUname(uname);
-			uvo.setEmail(email);
-			uvo.setPasswd(passwd);
+        // 회원가입 처리
+        if ("register".equals(pagecode)) {
+            String nickname = request.getParameter("nickname");
+            String userid = request.getParameter("id");
+            String useremail = request.getParameter("userid");
+            String emailDomain = request.getParameter("emailDomain");
+            String otherDomain = request.getParameter("otherDomain");
+            String password = request.getParameter("password");
 
-			int insertRows = dao.userInsert(uvo);
-			if (insertRows == 1) {
-				// 회원가입 성공
-				response.sendRedirect("index.jsp");
-			} else {
-				// 회원가입 실패
-				response.sendRedirect("500.html");
-			}
+            // 이메일 도메인 결정
+            String email = otherDomain != null && !otherDomain.isEmpty() ? useremail + "@" + otherDomain
+                    : useremail + "@" + emailDomain;
 
-			// -------------------login --------------------
-		} else if (pagecode.equals("P002")) {
-			String userid = request.getParameter("userid");
-			String passwd = request.getParameter("passwd");
+            // UserVO 생성
+            UserVO uvo = new UserVO();
+            uvo.setUserid(userid);
+            uvo.setUsername(nickname);
+            uvo.setPassword(password);
+            uvo.setUseremail(email);
 
-			// boolean loginCheck = dao.userLogin(userid, passwd);
-			// if(loginCheck == true) {
+            // UserDAO사용하여 db에 삽입
+            UserDAO userDAO = new UserDAO();
+            int result = userDAO.userInsert(uvo);
 
-			UserVO uvo = dao.userLogin(userid, passwd);
-			if (uvo != null) {
-				// if(uvo.getLoginCheck()) {
-				// 로그인 성공
+            if (result > 0) {
+                // 회원가입 성공
+                response.sendRedirect("login.jsp");
+            } else {
+                // 회원가입 실패
+                response.sendRedirect("register.jsp");
+            }
+        }
+        // 로그인 처리
+        else if ("login".equals(pagecode)) {
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
 
-				System.out.println("--------- 세션 할당 ------------" + uvo.getGrade());
-				// userid, uname, grade
-				HttpSession session = request.getSession();
-				session.setAttribute("KEY_SESS_USERID", uvo.getUserid());
-				session.setAttribute("KEY_SESS_UNAME", uvo.getUname());
-				session.setAttribute("KEY_SESS_GRADE", uvo.getGrade());
-				response.sendRedirect("index.jsp");
-			} else {
-				// 로그인 실패
-				response.sendRedirect("500.html");
-			}
+            // 여기부터에 로그인 처리 코드 작성
+            
+            // 유효성검사
 
-			// -------------------other --------------------
-		} else {
-			response.sendRedirect("500.html");
-		}
-		*/
-	}
-
+            // 로그인 성공 시 세션 처리
+        }
+        
+    }
 }
