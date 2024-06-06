@@ -60,7 +60,7 @@ public class UserServlet extends HttpServlet {
             UserVO user = (UserVO) session.getAttribute("user");
             if (user != null) {
                 // 사용자 정보가 있을 경우 댓글 데이터를 가져옴
-                ArrayList<ReplyVO> userReplies = replyDAO.replyUserSelect(user.getUser_seq());
+                ArrayList<ReplyVO> userReplies = replyDAO.replyUserSelect(user.getUser_seq()); 
                 session.setAttribute("userReplies", userReplies);
                 response.sendRedirect("mypage.jsp");
             } else {
