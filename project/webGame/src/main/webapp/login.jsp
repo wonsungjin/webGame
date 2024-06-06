@@ -23,16 +23,19 @@
         <div class="login-form">
             <h2>Login</h2>
             <form id="loginForm" method="post" action="UserServlet">
+                <!-- 사용자 아이디 입력 필드 -->
                 <div class="input-group">
                     <label for="userid">아이디</label>
                     <input type="text" id="userid" name="userid" required>
                 </div>
+                <!-- 사용자 비밀번호 입력 필드 -->
                 <div class="input-group">
                     <label for="password">비밀번호</label>
                     <input type="password" id="password" name="password" required>
                 </div>
-                <!-- Hidden input으로 pagecode -->
+                <!-- 페이지 코드 숨김 입력 필드 -->
                 <input type="hidden" name="pagecode" value="login">
+                <!-- 로그인 버튼 -->
                 <button type="submit" class="btn">로그인</button>
                 <p>
                     <a href="forgot-password.jsp">비밀번호찾기</a>
