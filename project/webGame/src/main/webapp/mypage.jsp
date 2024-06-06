@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ page import="User.UserVO"%>
@@ -20,6 +19,17 @@
     if (user == null) {
         response.sendRedirect("login.jsp");
         return;
+    }
+
+    String userEmail = user.getUseremail();
+    String emailUsername = "";
+    String emailDomain = "";
+    if (userEmail != null && !userEmail.isEmpty()) {
+        String[] emailParts = userEmail.split("@");
+        if (emailParts.length == 2) {
+            emailUsername = emailParts[0];
+            emailDomain = emailParts[1];
+        }
     }
 %>
 
@@ -42,11 +52,66 @@
         if (urlParams.get('update') === 'success') {
             alert('회원정보가 수정되었습니다.');
         }
+        
+        // ID 중복 검사
+        $('#checkId').click(function() {
+            var id = $('#id').val();
+            if (id.trim() === "") {
+                alert("ID를 입력하세요.");
+                return;
+            }
+            checkDuplicate('id', id);
+        });
+
+        // 닉네임 중복 검사
+        $('#checkNickname').click(function() {
+            var nickname = $('#nickname').val();
+            if (nickname.trim() === "") {
+                alert("닉네임을 입력하세요.");
+                return;
+            }
+            checkDuplicate('nickname', nickname);
+        });
+
+        // 이메일 중복 검사
+        $('#checkEmail').click(function() {
+            var email = $('#userid').val() + "@" + $('#emailDomain').val();
+            if ($('#emailDomain').val() === "other") {
+                email = $('#userid').val() + "@" + $('#otherDomain').val();
+            }
+            if (email.trim() === "") {
+                alert("이메일을 입력하세요.");
+                return;
+            }
+            checkDuplicate('email', email);
+        });
+
+        // 중복 검사를 위한 AJAX 호출
+        function checkDuplicate(field, value) {
+            $.post('CheckDuplicateFieldServlet', { field: field, value: value }, function(response) {
+                if (response === "DUPLICATE") {
+                    alert(field + "가 중복됩니다.");
+                } else {
+                    alert(field + "를 사용할 수 있습니다.");
+                }
+            });
+        }
+
+        // 이메일 도메인 변경 시 처리
+        $('#emailDomain').change(function() {
+            if ($(this).val() === "other") {
+                $('#otherDomain').show().attr('required', true);
+            } else {
+                $('#otherDomain').hide().attr('required', false);
+            }
+        });
     });
 
     // 회원정보 수정 활성화
     function enableEdit() {
         document.querySelectorAll('.info input').forEach(input => input.disabled = false);
+        document.querySelectorAll('.info select').forEach(select => select.disabled = false);
+        document.querySelectorAll('.info .check-duplicate').forEach(button => button.style.display = 'inline-block');
         document.getElementById('save-btn').style.display = 'inline-block';
         document.getElementById('cancel-btn').style.display = 'inline-block';
         document.getElementById('edit-btn').style.display = 'none';
@@ -55,6 +120,8 @@
     // 회원정보 수정 취소
     function cancelEdit() {
         document.querySelectorAll('.info input').forEach(input => input.disabled = true);
+        document.querySelectorAll('.info select').forEach(select => select.disabled = true);
+        document.querySelectorAll('.info .check-duplicate').forEach(button => button.style.display = 'none');
         document.getElementById('save-btn').style.display = 'none';
         document.getElementById('cancel-btn').style.display = 'none';
         document.getElementById('edit-btn').style.display = 'inline-block';
@@ -63,7 +130,15 @@
 
     // 회원정보 수정 저장
     function saveEdit() {
-        document.getElementById('updateForm').submit();
+        const updateForm = document.getElementById('updateForm');
+        document.getElementById('usernameHidden').value = document.getElementById('nickname').value;
+        document.getElementById('emailHidden').value = document.getElementById('userid').value + '@' + document.getElementById('emailDomain').value;
+        if (document.getElementById('emailDomain').value === "other") {
+            document.getElementById('emailHidden').value = document.getElementById('userid').value + '@' + document.getElementById('otherDomain').value;
+        }
+        document.getElementById('passwordHidden').value = document.getElementById('password').value;
+        document.getElementById('useridHidden').value = document.getElementById('id').value;
+        updateForm.submit();
     }
 
     // 회원 탈퇴 확인
@@ -102,8 +177,7 @@
 	<link rel="stylesheet" href="css/animate.css" />
 
 	<!-- 페이지 섹션 -->
-	<section class="page-section community-page set-bg"
-		data-setbg="img/community-bg.jpg">
+	<section class="page-section community-page set-bg" data-setbg="img/community-bg.jpg">
 		<!-- 헤더 섹션 -->
 		<header class="header-section">
 			<div class="container">
@@ -142,54 +216,67 @@
 				<button class="tablinks active" id="defaultOpen" onclick="openTab(event, 'user-info')">회원정보</button>
 			</div>
 			<div id="game-management" class="tabcontent">
-				<h2>게임관리</h2>
+				<h2 style="color: white;">게임관리</h2>
 			</div>
 			<div id="comment-management" class="tabcontent">
-				<h2>댓글관리</h2>
+				<h2 style="color: white;">댓글관리</h2>
 				<div class="comments">
 					<% if (userReplies != null && !userReplies.isEmpty()) { %>
 					<!-- 댓글이 있는 경우 -->
-					<c:forEach var="reply" items="${userReplies}">
-						<p>
-							댓글 <c:out value="${reply.reply_seq}" />: <c:out value="${reply.reply}" />
-						</p>
-					</c:forEach>
+						<c:forEach var="reply" items="${userReplies}">
+							<p>
+								댓글 <c:out value="${reply.reply_seq}" />: <c:out value="${reply.reply}" />
+							</p>
+						</c:forEach>
 					<% } else { %>
 					<!-- 댓글이 없는 경우 -->
-					<p>댓글이 없습니다.</p>
+						<p>댓글이 없습니다.</p>
 					<% } %>
 				</div>
 			</div>
 			<div id="user-info" class="tabcontent">
-				<h2>회원정보</h2>
+				<h2 style="color: white;">회원정보</h2>
 				<div class="info">
-					<label for="nickname">Nickname:</label>
-					<input type="text" id="nickname" name="nickname" value="<%= user.getUsername() %>" disabled>
-					<label for="id">ID:</label>
-					<input type="text" id="id" name="id" value="<%= user.getUserid() %>" disabled>
-					<label for="email">Email:</label>
-					<input type="email" id="email" name="email" value="<%= user.getUseremail() %>" disabled>
-					<label for="password">Password:</label>
-					<input type="password" id="password" name="password" value="<%= user.getPassword() %>" disabled>
-					<label for="signup-date">Signup Date:</label>
-					<input type="text" id="signup-date" name="signup-date" value="<%= user.getCreated_date() %>" disabled>
-					<label for="last-update">Last Update:</label>
-					<input type="text" id="last-update" name="last-update" value="<%= user.getUpdated_date() %>" disabled>
-				</div>
-				<div class="buttons">
-					<button id="edit-btn" class="btn" onclick="enableEdit()">수정</button>
-					<button id="save-btn" class="btn" style="display: none" onclick="saveEdit()">확인</button>
-					<button id="cancel-btn" class="btn" style="display: none" onclick="cancelEdit()">취소</button>
-					<button class="btn btn-danger" onclick="confirmDeletion()">회원탈퇴</button>
-				</div>
-				<form id="updateForm" method="post" action="UserServlet">
-					<input type="hidden" name="pagecode" value="update">
-					<input type="hidden" name="seq" value="<%= user.getUser_seq() %>">
-					<input type="hidden" name="username" value="<%= user.getUsername() %>">
-					<input type="hidden" name="email" value="<%= user.getUseremail() %>">
-					<input type="hidden" name="password" value="<%= user.getPassword() %>">
-					<input type="hidden" name="userid" value="<%= user.getUserid() %>">
-				</form>
+                    <label for="nickname">Nickname:</label>
+                    <input type="text" id="nickname" name="nickname" value="<%= user.getUsername() %>" disabled>
+                    <button type="button" id="checkNickname" class="check-duplicate" style="display: none; font-size: 0.8em; padding: 5px 10px;">중복 검사</button>
+                    <label for="id">ID:</label>
+                    <input type="text" id="id" name="id" value="<%= user.getUserid() %>" disabled>
+                    <button type="button" id="checkId" class="check-duplicate" style="display: none; font-size: 0.8em; padding: 5px 10px;">중복 검사</button>
+                    <label for="email">Email:</label>
+                    <div class="email-input">
+                        <input type="text" id="userid" name="userid" placeholder="Username" value="<%= emailUsername %>" disabled> 
+                        <span>@</span> 
+                        <select id="emailDomain" name="emailDomain" disabled>
+                            <option value="gmail.com" <%= "gmail.com".equals(emailDomain) ? "selected" : "" %>>gmail.com</option>
+                            <option value="naver.com" <%= "naver.com".equals(emailDomain) ? "selected" : "" %>>naver.com</option>
+                            <option value="hanmail.net" <%= "hanmail.net".equals(emailDomain) ? "selected" : "" %>>hanmail.net</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <input type="text" id="otherDomain" name="otherDomain" placeholder="Other Domain" style="display: none;" disabled>
+                    </div>
+                    <button type="button" id="checkEmail" class="check-duplicate" style="display: none; font-size: 0.8em; padding: 5px 10px;">중복 검사</button>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" value="<%= user.getPassword() %>" disabled>
+                    <label for="signup-date">Signup Date:</label>
+                    <input type="text" id="signup-date" name="signup-date" value="<%= user.getCreated_date() %>" disabled readonly>
+                    <label for="last-update">Last Update:</label>
+                    <input type="text" id="last-update" name="last-update" value="<%= user.getUpdated_date() %>" disabled readonly>
+                </div>
+                <div class="buttons">
+                    <button id="edit-btn" class="btn" onclick="enableEdit()">수정</button>
+                    <button id="save-btn" class="btn" style="display: none" onclick="saveEdit()">확인</button>
+                    <button id="cancel-btn" class="btn" style="display: none" onclick="cancelEdit()">취소</button>
+                    <button class="btn btn-danger" onclick="confirmDeletion()">회원탈퇴</button>
+                </div>
+                <form id="updateForm" method="post" action="UserServlet">
+                    <input type="hidden" name="pagecode" value="update">
+                    <input type="hidden" name="seq" value="<%= user.getUser_seq() %>">
+                    <input type="hidden" id="usernameHidden" name="username" value="<%= user.getUsername() %>">
+                    <input type="hidden" id="emailHidden" name="email" value="<%= user.getUseremail() %>">
+                    <input type="hidden" id="passwordHidden" name="password" value="<%= user.getPassword() %>">
+                    <input type="hidden" id="useridHidden" name="userid" value="<%= user.getUserid() %>">
+                </form>
 			</div>
 		</div>
 	</section>
