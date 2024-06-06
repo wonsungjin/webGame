@@ -118,13 +118,14 @@ public class ReplyDAO {
 		}
 		return rvo;
 	}
-	public ArrayList<ReplyVO> replySelect(String webGLName) {
+	
+	public ReplyVO replySelect(int seq) {
 		MyOracleConnection moc = new MyOracleConnection(); // 클래스 분리시켜놓아서 인스턴스 생성해서 사용
 		DataSource ds = null;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs= null;
-		ArrayList<ReplyVO> list = null;
+		ReplyVO rvo = null;
 		try 
 		{
 			// conn = moc.oracleConn();
@@ -134,31 +135,82 @@ public class ReplyDAO {
 				System.out.println("conn ok ");
 			else
 				System.out.println("conn fail ");
-			String sql = "select * from reply r,gametable gt where r.webgl = ?";
+			String sql = "select r.seq as rseq,r.created_date,r.reply,r.updated_date,r.user_seq from reply r,users u  where r.user_seq = ?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1,webGLName);
+			pstmt.setInt(1, seq);
 			rs=pstmt.executeQuery();
-			list = new ArrayList<ReplyVO>();
+			rvo = new ReplyVO();
 			while(rs.next()==true)
 			{
-				ReplyVO rvo = new ReplyVO();				
 				rvo.setCreated_date(rs.getString("created_date"));
 				rvo.setReply(rs.getString("reply"));
 				rvo.setUpdated_date(rs.getString("updated_date"));
 				rvo.setUser_seq(rs.getInt("user_seq"));
-				rvo.setGrade(rs.getInt("grade"));
-				rvo.setWebGL(rs.getString("webgl"));
-				list.add(rvo);
+				rvo.setReply_seq(rs.getInt("rseq"));
 			}
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally
 		{
 			moc.oracleClose(conn, pstmt);
 		}
-		return list;
+		return rvo;
 	}
+	
+	/**
+     * 특정 사용자의 댓글을 조회합니다.
+     *
+     * @param userSeq 사용자 고유 번호
+     * @return 댓글 정보가 담긴 ReplyVO 객체의 리스트
+     */
+	public ArrayList<ReplyVO> replyUserSelect(int userSeq) {
+	    MyOracleConnection moc = new MyOracleConnection();
+	    DataSource ds = null;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    ArrayList<ReplyVO> list = new ArrayList<>();
+
+	    try {
+	        ds = moc.myOracleDataSource();
+	        conn = ds.getConnection();
+	        String sql = "SELECT r.reply_seq, r.user_seq, r.webgl, r.reply, r.grade, r.created_date, r.updated_date, u.userid, u.username " +
+	                     "FROM reply r JOIN users u ON r.user_seq = u.user_seq WHERE r.user_seq = ?";
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, userSeq);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            ReplyVO rvo = new ReplyVO();
+	            rvo.setReply_seq(rs.getInt("reply_seq"));
+	            rvo.setUser_seq(rs.getInt("user_seq"));
+	            rvo.setWebGL(rs.getString("webgl"));
+	            rvo.setReply(rs.getString("reply"));
+	            rvo.setGrade(rs.getInt("grade"));
+	            rvo.setCreated_date(rs.getString("created_date"));
+	            rvo.setUpdated_date(rs.getString("updated_date"));
+	            UserVO userVO = new UserVO();
+	            userVO.setUserid(rs.getString("userid"));
+	            userVO.setUsername(rs.getString("username"));
+	            rvo.setUserVO(userVO);
+	            list.add(rvo);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        moc.oracleClose(conn, pstmt, rs);
+	    }
+	    return list;
+	}
+
+
+
+    /**
+     * 특정 게임의 댓글 조회
+     *
+     * @param webGLName 게임 고유 번호
+     * @return 댓글 정보가 담긴 ReplyVO 객체의 리스트
+     */
 	public ArrayList<ReplyVO> replyUserSelect(String webGLName) {
 		MyOracleConnection moc = new MyOracleConnection(); // 클래스 분리시켜놓아서 인스턴스 생성해서 사용
 		DataSource ds = null;

@@ -56,7 +56,7 @@
             </a>
             <div class="user-panel">
                 <% if (user != null) { %>
-                    <a href="UserServlet?action=logout">로그아웃</a> / <a href="mypage.jsp">마이페이지</a>
+                    <a href="UserServlet?action=logout">로그아웃</a>
                 <% } else { %>
                     <a href="login.jsp">로그인</a> / <a href="register.jsp">회원가입</a>
                 <% } %>
@@ -71,7 +71,7 @@
                     <li><a href="index.jsp">홈</a></li>
                     <li><a href="document.html">문서</a></li>
                     <% if (user != null) { %>
-                        <li><a href="mypage.jsp">마이페이지</a></li>
+                        <li><a href="UserServlet?action=mypage">마이페이지</a></li>
                     <% } %>
                 </ul>
             </nav>
@@ -117,6 +117,7 @@
                 %>
                 <div class="col-md-6">
                     <div class="review-item">
+                        <!-- 게임 리뷰 항목 -->
                         <div type="button" class="review-cover set-bg" data-setbg="img/gameLogo/<%= webGLName %>.png" onclick="redirectToCommunity('<%= webGLName %>');">
                             <div class="score yellow">9.3</div>
                         </div>
@@ -143,6 +144,7 @@
     <!-- 페이지 섹션 끝 -->
 
     <script>
+        // 커뮤니티 페이지로 리다이렉트하는 함수
         function redirectToCommunity(name) {
             var url = '<%= request.getContextPath() %>/GameServlet?webGLName='+ encodeURIComponent(name);
             window.location.href = url;
