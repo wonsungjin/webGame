@@ -14,6 +14,7 @@
     if (currentSession != null) {
         user = (UserVO) currentSession.getAttribute("user");
     }
+    System.out.println(user);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,8 +74,10 @@
                     <li><a href="pageinfo.html">PageInfo</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <% if (user != null) { %>
-                        <li><a href="UserServlet?action=mypage">MyPage</a></li>
+                        <li><a href="UserServlet?action=mypage">마이페이지</a></li>
+                        <li><a href="UploadServlet?pagecode=contactMove">게임등록</a></li>
                     <% } %>
+
                 </ul>
             </nav>
         </div>
@@ -96,62 +99,87 @@
     </section>
     <!-- 페이지 정보 섹션 끝 -->
 
-    <!-- 페이지 섹션 -->
-    <section class="page-section review-page spad">
-        <div class="container">
-            <div class="row">
-                <% 
-                    // 웹 애플리케이션의 실제 경로를 가져옵니다.
-                    String webGLPath = application.getRealPath("/webGL");
-                    File webGLDir = new File(webGLPath);
-
-                    // webGL 폴더의 내용(디렉토리 이름)을 가져옵니다.
-                    List<String> webGLNames = new ArrayList<>();
-                    if (webGLDir.exists() && webGLDir.isDirectory()) {
-                        for (File file : webGLDir.listFiles()) {
-                            if (file.isDirectory()) {
-                                webGLNames.add(file.getName());
-                            }
-                        }
-                    }
-                    // 폴더 이름들을 출력합니다.
-                    for (String webGLName : webGLNames) {
-                %>
-                <div class="col-md-6">
-                    <div class="review-item">
-                        <!-- 게임 리뷰 항목 -->
-                        <div type="button" class="review-cover set-bg" data-setbg="img/gameLogo/<%= webGLName %>.png" onclick="redirectToCommunity('<%= webGLName %>');">
-                            <div class="score yellow">9.3</div>
-                        </div>
-                        <div class="review-text">
-                            <h4><%= webGLName %></h4>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star is-fade"></i>
-                            </div>
-                            <p>초록색 공이 파란색 장애물들을 상하좌우로 피하면서 120초를 버티는 게임입니다.</p>
-                        </div>
-                    </div>
-                </div>
-                <% } %>
-            </div>
-            <div class="text-center pt-4">
-                <button class="site-btn btn-sm">더 보기</button>
-            </div>
+ <!-- 페이지 섹션 -->
+<section class="page-section review-page spad">
+    <div class="container">
+        <div class="row" id="gameList">
+            <!-- 게임 목록은 JavaScript에서 동적으로 추가될 예정입니다. -->
         </div>
-    </section>
-    <!-- 페이지 섹션 끝 -->
+    </div>
+</section>
+<!-- 페이지 섹션 끝 -->
 
-    <script>
-        // 커뮤니티 페이지로 리다이렉트하는 함수
-        function redirectToCommunity(name) {
-            var url = '<%= request.getContextPath() %>/GameServlet?webGLName='+ encodeURIComponent(name);
-            window.location.href = url;
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        method: 'POST',
+        url: '<%= request.getContextPath() %>/GameServlet?pagecode=gameTableAll',
+        success: function(response) {
+            console.log(response);
+            var myval_obj = JSON.parse(response);
+
+            var gameListHtml = ""; // gameListHtml 변수를 반복문 외부에 선언
+
+            myval_obj.forEach(function(item) {
+                var webGL = item["webGL"];
+                var gameName = item["gameName"];
+                var contents = item["contents"];
+                var grade = item["grade"];
+                var updated_date = item["updated_date"];
+                var user_seq = item["user_seq"];
+
+                var clickHandler = function(webGL) {
+                    return function() {
+                        redirectToCommunity(webGL);
+                    };
+                };
+
+                gameListHtml += '<div class="col-md-6">' +
+                '<div class="review-item">' +
+                '<img class="review-cover" src="img/gameLogo/'+webGL+'.png" data-webgl="' + webGL + '">' +
+                '<div class="score yellow">' + grade + '</div>' +
+                '<div class="review-text">' +
+                '<h4>' + gameName + '</h4>' +
+                '<div class="rating">' +
+                '<i class="fa fa-star"></i>' +
+                '<i class="fa fa-star"></i>' +
+                '<i class="fa fa-star"></i>' +
+                '<i class="fa fa-star"></i>' +
+                '<i class="fa fa-star is-fade"></i>' +
+                '</div>' +
+                '<p>' + contents + '</p>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+
+
+            });
+
+            // 생성된 HTML을 게임 목록에 추가
+            $("#gameList").append(gameListHtml);
+
+            $(".review-cover").click(function() {
+                var webGL = $(this).attr('data-webgl');
+                redirectToCommunity(webGL);
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
         }
-    </script>
+    });
+});
+
+</script>
+ 
+
+<script>
+    // 커뮤니티 페이지로 리다이렉트하는 함수
+    function redirectToCommunity(webGLName) {
+        var url = '<%= request.getContextPath() %>/GameServlet?webGLName=' + encodeURIComponent(webGLName);
+        window.location.href = url;
+    }
+</script>
 
     <!--====== 자바스크립트 및 제이쿼리 ======-->
     <script src="js/jquery-3.2.1.min.js"></script>
