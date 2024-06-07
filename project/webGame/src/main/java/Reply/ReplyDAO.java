@@ -272,6 +272,7 @@ public class ReplyDAO {
 		}
 		return list;
 	}
+	
 	public int replyDelete(int replySeq) {
 	    MyOracleConnection moc = new MyOracleConnection();
 	    DataSource ds = null;
