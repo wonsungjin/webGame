@@ -69,13 +69,15 @@
             <!-- 사이트 메뉴 -->
             <nav class="main-menu">
                 <ul>
-                    <li><a href="index.jsp">홈</a></li>
-                    <li><a href="document.html">문서</a></li>
+                    <li><a href="index.jsp">Home</a></li>
+                    <li><a href="document.html">Document</a></li>
+                    <li><a href="pageinfo.html">PageInfo</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                     <% if (user != null) { %>
                         <li><a href="UserServlet?action=mypage">마이페이지</a></li>
                         <li><a href="UploadServlet?pagecode=contactMove">게임등록</a></li>
-                    <% }else{ %>
-                    <%} %>
+                    <% } %>
+
                 </ul>
             </nav>
         </div>
