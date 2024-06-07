@@ -36,217 +36,402 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Page - Game Warrior</title>
-<link rel="stylesheet" href="css/mypage.css">
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<script>
-    $(document).ready(function(){
-        // 배경 이미지 설정
-        var bg = $(".set-bg").attr("data-setbg");
-        $(".set-bg").css("background-image", "url(" + bg + ")");
+    <title>My Page</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="My Personal Page">
+    <meta name="keywords" content="personal, mypage, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->   
+    <link href="img/favicon.ico" rel="shortcut icon"/>
 
-        // 회원정보 수정 성공 시 알림
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('update') === 'success') {
-            alert('회원정보가 수정되었습니다.');
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="css/owl.carousel.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/animate.css"/>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <style>
+        body {
+            background-image: url('img/community-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        
-        // ID 중복 검사
-        $('#checkId').click(function() {
-            var id = $('#id').val();
-            if (id.trim() === "") {
-                alert("ID를 입력하세요.");
-                return;
-            }
-            checkDuplicate('id', id);
-        });
+        .info label, .info input, .info select, .info span {
+            color: white;
+        }
+        .info input:disabled, .info select:disabled {
+            color: white;
+        }
+        .info input:enabled, .info select:enabled {
+            color: black;
+        }
+        .page-section {
+            flex: 1;
+        }
+        .mypage-body {
+            width: 50%;
+            height: calc(100vh - 100px); /* Adjust the header height if necessary */
+            margin: 0 auto;
+            background-color: rgba(0, 0, 0, 0.7); /* Optional: Add background color with transparency */
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .tabs {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        .tablinks {
+            flex: 1;
+            padding: 10px;
+            margin: 5px;
+            background-color: #333;
+            color: white;
+            border: none;
+            text-align: center;
+            cursor: pointer;
+        }
+        .tablinks.active {
+            background-color: #555;
+        }
+        .tabcontent {
+            display: none;
+            padding: 20px;
+        }
+        .tabcontent h2 {
+            color: white;
+        }
+        .info {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+        .info label {
+            grid-column: 1 / 2;
+        }
+        .info input, .info select {
+            grid-column: 2 / 3;
+        }
+        .info .check-duplicate {
+            grid-column: 3 / 4;
+            display: none;
+            font-size: 0.8em;
+            padding: 5px 10px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .btn {
+            color: white;
+            background-color: blue;
+            margin-left: 10px;
+        }
+        .btn.btn-danger {
+            background-color: red;
+        }
+        .profile-image {
+            display: flex;
+            align-items: center;
+        }
+        .profile-image img {
+            width: 63px;
+            height: 63px;
+            border-radius: 50%;
+        }
+        .file-upload-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            height: 100%;
+            width: 100%;
+            cursor: pointer;
+        }
+        .file-upload-label {
+            color: white;
+            display: inline-block;
+            padding: 5px 10px;
+            border: 1px solid white;
+            cursor: pointer;
+        }
+        .file-upload-filename {
+            color: white;
+            margin-left: 10px;
+        }
+        .file-upload-filename {
+            color: white;
+            margin-left: 10px;
+        }
+        .comments p {
+            color: white;
+        }
+        .comment-buttons {
+            margin-left: 10px;
+        }
+    </style>
 
-        // 닉네임 중복 검사
-        $('#checkNickname').click(function() {
-            var nickname = $('#nickname').val();
-            if (nickname.trim() === "") {
-                alert("닉네임을 입력하세요.");
-                return;
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function(){
+            // 회원정보 수정 성공 시 알림
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('update') === 'success') {
+                alert('회원정보가 수정되었습니다.');
             }
-            checkDuplicate('nickname', nickname);
-        });
+            
+            // ID 중복 검사
+            $('#checkId').click(function() {
+                var id = $('#id').val();
+                if (id.trim() === "") {
+                    alert("ID를 입력하세요.");
+                    return;
+                }
+                checkDuplicate('id', id);
+            });
 
-        // 이메일 중복 검사
-        $('#checkEmail').click(function() {
-            var email = $('#userid').val() + "@" + $('#emailDomain').val();
-            if ($('#emailDomain').val() === "other") {
-                email = $('#userid').val() + "@" + $('#otherDomain').val();
-            }
-            if (email.trim() === "") {
-                alert("이메일을 입력하세요.");
-                return;
-            }
-            checkDuplicate('email', email);
-        });
+            // 닉네임 중복 검사
+            $('#checkNickname').click(function() {
+                var nickname = $('#nickname').val();
+                if (nickname.trim() === "") {
+                    alert("닉네임을 입력하세요.");
+                    return;
+                }
+                checkDuplicate('nickname', nickname);
+            });
 
-        // 중복 검사를 위한 AJAX 호출
-        function checkDuplicate(field, value) {
-            $.post('CheckDuplicateFieldServlet', { field: field, value: value }, function(response) {
-                if (response === "DUPLICATE") {
-                    alert(field + "가 중복됩니다.");
+            // 이메일 중복 검사
+            $('#checkEmail').click(function() {
+                var email = $('#userid').val() + "@" + $('#emailDomain').val();
+                if ($('#emailDomain').val() === "other") {
+                    email = $('#userid').val() + "@" + $('#otherDomain').val();
+                }
+                if (email.trim() === "") {
+                    alert("이메일을 입력하세요.");
+                    return;
+                }
+                checkDuplicate('email', email);
+            });
+
+            // 중복 검사를 위한 AJAX 호출
+            function checkDuplicate(field, value) {
+                $.post('CheckDuplicateFieldServlet', { field: field, value: value }, function(response) {
+                    if (response === "DUPLICATE") {
+                        alert(field + "가 중복됩니다.");
+                    } else {
+                        alert(field + "를 사용할 수 있습니다.");
+                    }
+                });
+            }
+
+            // 이메일 도메인 변경 시 처리
+            $('#emailDomain').change(function() {
+                if ($(this).val() === "other") {
+                    $('#otherDomain').show().attr('required', true);
                 } else {
-                    alert(field + "를 사용할 수 있습니다.");
+                    $('#otherDomain').hide().attr('required', false);
                 }
             });
-        }
 
-        // 이메일 도메인 변경 시 처리
-        $('#emailDomain').change(function() {
-            if ($(this).val() === "other") {
-                $('#otherDomain').show().attr('required', true);
-            } else {
-                $('#otherDomain').hide().attr('required', false);
-            }
+         // 파일 선택 시 파일명 표시 색상 변경
+            $('#file-upload').change(function() {
+                var fileName = $(this).val().split('\\').pop();
+                $('.file-upload-filename').text(fileName).css('color', 'white');
+            });
         });
-    });
 
-    // 회원정보 수정 활성화
-    function enableEdit() {
+        // 회원정보 수정 활성화
+        function enableEdit() {
         document.querySelectorAll('.info input').forEach(input => input.disabled = false);
         document.querySelectorAll('.info select').forEach(select => select.disabled = false);
         document.querySelectorAll('.info .check-duplicate').forEach(button => button.style.display = 'inline-block');
         document.getElementById('save-btn').style.display = 'inline-block';
         document.getElementById('cancel-btn').style.display = 'inline-block';
         document.getElementById('edit-btn').style.display = 'none';
+        document.getElementById('delete-btn').style.display = 'none';
+        document.getElementById('file-upload-wrapper').style.display = 'block'; // 파일 업로드 버튼 표시
+        document.querySelectorAll('.info input, .info select').forEach(input => input.style.color = 'black');
     }
 
-    // 회원정보 수정 취소
-    function cancelEdit() {
+        // 회원정보 수정 취소
+        function cancelEdit() {
         document.querySelectorAll('.info input').forEach(input => input.disabled = true);
         document.querySelectorAll('.info select').forEach(select => select.disabled = true);
         document.querySelectorAll('.info .check-duplicate').forEach(button => button.style.display = 'none');
         document.getElementById('save-btn').style.display = 'none';
         document.getElementById('cancel-btn').style.display = 'none';
         document.getElementById('edit-btn').style.display = 'inline-block';
-        alert("수정을 취소합니다.");
+        document.getElementById('delete-btn').style.display = 'inline-block';
+        document.getElementById('file-upload-wrapper').style.display = 'none'; // 파일 업로드 버튼 숨기기
+        document.querySelectorAll('.info input:disabled, .info select:disabled').forEach(input => input.style.color = 'white');
     }
 
-    // 회원정보 수정 저장
-    function saveEdit() {
-        const updateForm = document.getElementById('updateForm');
-        document.getElementById('usernameHidden').value = document.getElementById('nickname').value;
-        document.getElementById('emailHidden').value = document.getElementById('userid').value + '@' + document.getElementById('emailDomain').value;
-        if (document.getElementById('emailDomain').value === "other") {
-            document.getElementById('emailHidden').value = document.getElementById('userid').value + '@' + document.getElementById('otherDomain').value;
+        // 회원정보 수정 저장
+        function saveEdit() {
+            const updateForm = document.getElementById('updateForm');
+            document.getElementById('usernameHidden').value = document.getElementById('nickname').value;
+            document.getElementById('emailHidden').value = document.getElementById('userid').value + '@' + document.getElementById('emailDomain').value;
+            if (document.getElementById('emailDomain').value === "other") {
+                document.getElementById('emailHidden').value = document.getElementById('userid').value + '@' + document.getElementById('otherDomain').value;
+            }
+            document.getElementById('passwordHidden').value = document.getElementById('password').value;
+            document.getElementById('useridHidden').value = document.getElementById('id').value;
+            updateForm.submit();
         }
-        document.getElementById('passwordHidden').value = document.getElementById('password').value;
-        document.getElementById('useridHidden').value = document.getElementById('id').value;
-        updateForm.submit();
+
+        // 회원 탈퇴 확인
+        function confirmDeletion() {
+            if (confirm("정말 회원 탈퇴를 하시겠습니까?")) {
+                window.location.href = 'UserServlet?action=delete&seq=<%= user.getUser_seq() %>';
+            }
+        }
+
+        // 탭 열기
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+    // 댓글 삭제
+    function deleteComment(replySeq) {
+        if (confirm("정말 이 댓글을 삭제하시겠습니까?")) {
+            $.ajax({
+                url: '<%= request.getContextPath() %>/ReplyServlet', // ReplyServlet의 deleteComment 액션
+                type: 'POST',
+                data: { action: 'deleteComment', replySeq: replySeq },
+                success: function(response) {
+                    // 성공적으로 삭제되었을 때의 처리
+                    console.log('댓글이 삭제되었습니다.');
+                    // 삭제된 댓글을 화면에서 제거
+                    $('#reply-' + replySeq).remove();
+                },
+                error: function(error) {
+                    // 삭제에 실패했을 때의 처리
+                    console.error('댓글 삭제에 실패했습니다:', error);
+                }
+            });
+        }
     }
 
-    // 회원 탈퇴 확인
-    function confirmDeletion() {
-        if (confirm("정말 회원 탈퇴를 하시겠습니까?")) {
-            window.location.href = 'UserServlet?action=delete&seq=<%= user.getUser_seq() %>';
-        }
-    }
-
-    // 탭 열기
-    function openTab(evt, tabName) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
-        tablinks = document.getElementsByClassName("tablinks");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-        document.getElementById(tabName).style.display = "block";
-        evt.currentTarget.className += " active";
-    }
-
-    window.onload = function() {
-        document.getElementById("defaultOpen").click();
-    };
-</script>
+        window.onload = function() {
+            document.getElementById("defaultOpen").click();
+        };
+    </script>
 </head>
 <body>
-	<!-- 스타일시트 -->
-	<link rel="stylesheet" href="css/bootstrap.min.css" />
-	<link rel="stylesheet" href="css/font-awesome.min.css" />
-	<link rel="stylesheet" href="css/owl.carousel.css" />
-	<link rel="stylesheet" href="css/style.css" />
-	<link rel="stylesheet" href="css/animate.css" />
+    <!-- 페이지 전처리기 -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
 
-	<!-- 페이지 섹션 -->
-	<section class="page-section community-page set-bg" data-setbg="img/community-bg.jpg">
-		<!-- 헤더 섹션 -->
-		<header class="header-section">
-			<div class="container">
-				<a class="site-logo" href="index.jsp">
-					<img src="img/logo.png" alt="">
-				</a>
-				<div class="user-panel">
-					<% if (user != null) { %>
-					<a href="UserServlet?action=logout">로그아웃</a>
-					<% } else { %>
-					<a href="login.jsp">로그인</a> / <a href="register.jsp">회원가입</a>
-					<% } %>
-				</div>
-				<!-- 네비게이션 스위치 -->
-				<div class="nav-switch">
-					<i class="fa fa-bars"></i>
-				</div>
-				<!-- 메인 메뉴 -->
-				<nav class="main-menu">
-					<ul>
-						<li><a href="index.jsp">홈</a></li>
-						<li><a href="document.html">문서</a></li>
-						<% if (user != null) { %>
-						<li><a href="UserServlet?action=mypage">마이페이지</a></li>
-						<% } %>
-					</ul>
-				</nav>
-			</div>
-		</header>
+    <!-- 헤더 섹션 -->
+    <header class="header-section">
+        <div class="container">
+            <!-- 로고 -->
+            <a class="site-logo" href="index.jsp">
+                <img src="img/logo.png" alt="">
+            </a>
+            <div class="user-panel">
+                <c:if test="${user != null}">
+                    <a href="UserServlet?action=logout">Logout</a>
+                </c:if>
+                <c:if test="${user == null}">
+                    <a href="login.jsp">Login</a> / <a href="register.jsp">Register</a>
+                </c:if>
+            </div>
+            <!-- 반응형 메뉴 버튼 -->
+            <div class="nav-switch">
+                <i class="fa fa-bars"></i>
+            </div>
+            <!-- 사이트 메뉴 -->
+            <nav class="main-menu">
+                <ul>
+                    <li><a href="index.jsp">Home</a></li>
+                    <li><a href="document.html">Document</a></li>
+                    <li><a href="pageinfo.html">PageInfo</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <c:if test="${user != null}">
+                        <li><a href="UserServlet?action=mypage">MyPage</a></li>
+                    </c:if>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-		<div class="mypage-container">
-			<!-- 탭 섹션 -->
-			<div class="tabs">
-				<button class="tablinks" onclick="openTab(event, 'game-management')">게임관리</button>
-				<button class="tablinks" onclick="openTab(event, 'comment-management')">댓글관리</button>
-				<button class="tablinks active" id="defaultOpen" onclick="openTab(event, 'user-info')">회원정보</button>
-			</div>
-			<div id="game-management" class="tabcontent">
-				<h2 style="color: white;">게임관리</h2>
-			</div>
-			<div id="comment-management" class="tabcontent">
-				<h2 style="color: white;">댓글관리</h2>
-				<div class="comments">
-					<% if (userReplies != null && !userReplies.isEmpty()) { %>
-					<!-- 댓글이 있는 경우 -->
-						<c:forEach var="reply" items="${userReplies}">
-							<p>
-								댓글 <c:out value="${reply.reply_seq}" />: <c:out value="${reply.reply}" />
-							</p>
-						</c:forEach>
-					<% } else { %>
-					<!-- 댓글이 없는 경우 -->
-						<p>댓글이 없습니다.</p>
-					<% } %>
-				</div>
-			</div>
-			<div id="user-info" class="tabcontent">
-				<h2 style="color: white;">회원정보</h2>
-				<div class="info">
+    <!-- 페이지 섹션 -->
+    <div class="page-section community-page set-bg" data-setbg="img/community-bg.jpg">
+        <div class="mypage-body">
+            <div class="tabs">
+                <button class="tablinks" onclick="openTab(event, 'game-management')">게임관리</button>
+                <button class="tablinks" onclick="openTab(event, 'comment-management')">댓글관리</button>
+                <button class="tablinks active" id="defaultOpen" onclick="openTab(event, 'user-info')">회원정보</button>
+            </div>
+            <div id="game-management" class="tabcontent">
+                <h2>게임관리</h2>
+            </div>
+            <div id="comment-management" class="tabcontent">
+                <h2>댓글관리</h2>
+                <div class="comments">
+                    <c:if test="${not empty userReplies}">
+                        <c:forEach var="reply" items="${userReplies}">
+                            <div id="reply-${reply.reply_seq}">
+                                <p>댓글 <c:out value="${reply.reply_seq}" />: <c:out value="${reply.reply}" />
+                                    <span class="comment-buttons">
+                                        <button class="btn" onclick="moveComment(${reply.reply_seq})">이동</button>
+                                        <button class="btn btn-danger" onclick="deleteComment(${reply.reply_seq})">삭제</button>
+                                    </span>
+                                </p>
+                            </div>
+                        </c:forEach>
+                    </c:if>
+                    <c:if test="${empty userReplies}">
+                        <p>댓글이 없습니다.</p>
+                    </c:if>
+                </div>
+            </div>
+            <div id="user-info" class="tabcontent">
+                <h2>회원정보</h2>
+                <div class="info">
                     <label for="nickname">Nickname:</label>
                     <input type="text" id="nickname" name="nickname" value="<%= user.getUsername() %>" disabled>
-                    <button type="button" id="checkNickname" class="check-duplicate" style="display: none; font-size: 0.8em; padding: 5px 10px;">중복 검사</button>
+                    <button type="button" id="checkNickname" class="check-duplicate">중복 검사</button>
                     <label for="id">ID:</label>
                     <input type="text" id="id" name="id" value="<%= user.getUserid() %>" disabled>
-                    <button type="button" id="checkId" class="check-duplicate" style="display: none; font-size: 0.8em; padding: 5px 10px;">중복 검사</button>
+                    <button type="button" id="checkId" class="check-duplicate">중복 검사</button>
                     <label for="email">Email:</label>
                     <div class="email-input">
-                        <input type="text" id="userid" name="userid" placeholder="Username" value="<%= emailUsername %>" disabled> 
-                        <span>@</span> 
+                        <input type="text" id="userid" name="userid" placeholder="Username" value="<%= emailUsername %>" disabled>
+                        <span>@</span>
                         <select id="emailDomain" name="emailDomain" disabled>
                             <option value="gmail.com" <%= "gmail.com".equals(emailDomain) ? "selected" : "" %>>gmail.com</option>
                             <option value="naver.com" <%= "naver.com".equals(emailDomain) ? "selected" : "" %>>naver.com</option>
@@ -255,19 +440,31 @@
                         </select>
                         <input type="text" id="otherDomain" name="otherDomain" placeholder="Other Domain" style="display: none;" disabled>
                     </div>
-                    <button type="button" id="checkEmail" class="check-duplicate" style="display: none; font-size: 0.8em; padding: 5px 10px;">중복 검사</button>
+                    <button type="button" id="checkEmail" class="check-duplicate">중복 검사</button>
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" value="<%= user.getPassword() %>" disabled>
+                    <br>
                     <label for="signup-date">Signup Date:</label>
                     <input type="text" id="signup-date" name="signup-date" value="<%= user.getCreated_date() %>" disabled readonly>
+                    <br>
                     <label for="last-update">Last Update:</label>
                     <input type="text" id="last-update" name="last-update" value="<%= user.getUpdated_date() %>" disabled readonly>
+                    <br>
+                    <label for="profile-image">Profile Image:</label>
+                    <div class="profile-image">
+                        <img src="img/authors/1.jpg" alt="Profile Image">
+                        <div class="file-upload-wrapper" id="file-upload-wrapper" style="display: none;">
+                            <label for="file-upload" class="file-upload-label">Choose File</label>
+                            <input type="file" id="file-upload" name="profileImage">
+                            <span class="file-upload-filename"></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="buttons">
                     <button id="edit-btn" class="btn" onclick="enableEdit()">수정</button>
                     <button id="save-btn" class="btn" style="display: none" onclick="saveEdit()">확인</button>
-                    <button id="cancel-btn" class="btn" style="display: none" onclick="cancelEdit()">취소</button>
-                    <button class="btn btn-danger" onclick="confirmDeletion()">회원탈퇴</button>
+                    <button id="cancel-btn" class="btn btn-danger" style="display: none" onclick="cancelEdit()">취소</button>
+                    <button id="delete-btn" class="btn btn-danger" onclick="confirmDeletion()">회원탈퇴</button>
                 </div>
                 <form id="updateForm" method="post" action="UserServlet">
                     <input type="hidden" name="pagecode" value="update">
@@ -277,8 +474,16 @@
                     <input type="hidden" id="passwordHidden" name="password" value="<%= user.getPassword() %>">
                     <input type="hidden" id="useridHidden" name="userid" value="<%= user.getUserid() %>">
                 </form>
-			</div>
-		</div>
-	</section>
+            </div>
+        </div>
+    </div>
+    <!-- 페이지 섹션 끝 -->
+
+    <!--====== Javascripts & Jquery ======-->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.marquee.min.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
