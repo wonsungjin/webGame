@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ page import="User.UserVO"%>
 <%@ page import="java.io.*, java.util.*, org.apache.commons.fileupload.*, org.apache.commons.fileupload.disk.*, org.apache.commons.fileupload.servlet.*" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,6 +31,16 @@
 	<![endif]-->
 
 </head>
+
+<%
+    // 세션 변수를 중복 선언하지 않도록 기존 세션이 있는지 확인하고 가져옵니다.
+    HttpSession currentSession = request.getSession(false);
+    UserVO user = null;
+    if (currentSession != null) {
+        user = (UserVO) currentSession.getAttribute("user");
+    }
+    System.out.println(user);
+%>
 <body>
 	<!-- Page Preloder -->
 	<div id="preloder">
@@ -125,6 +136,7 @@
                 <img id="image-preview" src="img/gameLogo/10.jpg">
                 <input type="file" id="image-upload" accept="image/*" style="display: none;">
                 <button id="upload-button" class="site-btn btn-sm" style="position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 175px;">Upload Image</button>
+                <div id="file-name" style="margin-top: 10px; color: white; text-align: center; position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%);"></div> <!-- 파일 이름을 표시할 요소 수정 -->
             </div>
             <div class="col-lg-8">
                 <div class="contact-form-warp">
@@ -132,17 +144,17 @@
                     <div class="comment-form">
                         <div class="row">
                             <div class="col-md-6">
-                                <input type="text" placeholder="Name">
+                                <input type="text" placeholder="Name" value="<%= user.getUsername() %>" readonly>
                             </div>
                             <div class="col-md-6">
-                                <input type="email" placeholder="Email">
+                                <input type="email" placeholder="Email" value="<%= user.getUseremail() %>" readonly>
                             </div>
                             <div class="col-lg-12" style="position: relative;">
-                                <input type="text" placeholder="Subject">
-                                <textarea placeholder="Message"></textarea>
+                                <input id="game-name" type="text" placeholder="게임 이름 입력...">
+                                <textarea id="game-description" class="form-control no-resize" placeholder="게임 설명 입력..."></textarea>
                                 <input type="file" id="file-upload" accept=".zip" style="display: none;">
                                 <label for="file-upload" class="site-btn btn-sm" style=" right: 0;">Upload File</label>
-                                <button id="save-button" class="site-btn btn-sm" style="position: absolute;  right: 0;">저장</button>
+                                <button id="save-button" class="site-btn btn-sm" style="position: absolute; bottom: 0; right: 0;">저장</button>
                             </div>
                         </div>
                     </div>
@@ -157,15 +169,17 @@
     $(document).ready(function() {
         var imageData = null; // 이미지 데이터를 저장할 변수
         var fileData = null; // 파일 데이터를 저장할 변수
+        var imageFileName = null;
+        var fileFileName = null;
 
         // 이미지 업로드 버튼 클릭 시
         $("#upload-button").click(function() {
-            $("#image-upload").click(); // 이미지 업로드 input 클릭
+            $("#image-upload").trigger("click"); // 이미지 업로드 input 클릭 이벤트 트리거
         });
 
         // 파일 업로드 버튼 클릭 시
         $("#file-upload-button").click(function() {
-            $("#file-upload").click(); // 파일 업로드 input 클릭
+            $("#file-upload").trigger("click"); // 파일 업로드 input 클릭 이벤트 트리거
         });
         
         // 이미지 선택 시
@@ -176,6 +190,8 @@
                 var dataURL = reader.result;
                 $("#image-preview").attr("src", dataURL); // 미리보기 이미지 업데이트
                 imageData = input.files[0]; // 이미지 데이터 저장
+                // 이미지 파일 이름 (확장자 제외)
+                imageFileName = imageData.name.split('.').slice(0, -1).join('.');
             };
             reader.readAsDataURL(input.files[0]);
         });
@@ -183,36 +199,64 @@
         // 파일 선택 시
         $("#file-upload").change(function(event) {
             fileData = event.target.files[0]; // 파일 데이터 저장
+            if (fileData) {
+                $("#file-name").text("선택한 파일: " + fileData.name); // 선택한 파일 이름을 업데이트
+                // 파일 데이터 이름 (확장자 제외)
+                fileFileName = fileData.name.split('.').slice(0, -1).join('.');
+            } else {
+                $("#file-name").text(""); // 파일이 선택되지 않은 경우
+            }
         });
 
         // 저장 버튼 클릭 시
         $("#save-button").click(function() {
+            // 파일 이름이 확장자를 제외하고 동일한지 확인
             if (imageData && fileData) { // 이미지와 파일 데이터가 모두 존재할 경우에만 실행
-                var formData = new FormData();
-                formData.append('image', imageData); // 이미지 데이터 추가
-                formData.append('file', fileData); // 파일 데이터 추가
+                if (imageFileName === fileFileName) {
+                	var formData = new FormData();
+                	let postContent = $(event.target).closest('.comment-form');
+                	let gameName = $('#game-name').val();
+                	let gameContent = $('#game-description').val();
+                	let user_seq = <%=user.getUser_seq()%>;
+                	let webGL = imageData.name;
+                	if (webGL.lastIndexOf(".") !== -1) {
+                	    webGL = webGL.substring(0, webGL.lastIndexOf("."));
+                	}
+                	// 이미지와 파일 데이터 추가
+                	formData.append('image', imageData);
+                	formData.append('file', fileData);
 
-                // AJAX를 사용하여 이미지와 파일을 서버로 전송
-                $.ajax({
-                    url: '<%= request.getContextPath() %>/UploadServlet', // 파일 업로드를 처리하는 서버 측 스크립트의 URL
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        console.log(response); // 성공 시 응답 출력
-                        // 여기에 추가적인 작업을 수행할 수 있습니다.
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText); // 에러 메시지 출력
-                    }
-                });
+                	// 게임 이름, 설명 및 사용자 시퀀스 데이터 추가
+                	formData.append('gameName', gameName);
+                	formData.append('gameContent', gameContent);
+                	formData.append('user_seq', user_seq);
+                	formData.append('webGL', webGL);
+
+                	// AJAX를 사용하여 이미지와 파일 및 추가 데이터를 서버로 전송
+                	$.ajax({
+                	    url: '<%= request.getContextPath() %>/UploadServlet?pagecode=file', // 파일 업로드를 처리하는 서버 측 스크립트의 URL
+                	    type: 'POST',
+                	    data: formData,
+                	    processData: false,
+                	    contentType: false,
+                	    success: function(response) {
+                	        console.log(response); // 성공 시 응답 출력
+                	        // 여기에 추가적인 작업을 수행할 수 있습니다.
+                	    },
+                	    error: function(xhr, status, error) {
+                	        console.error(xhr.responseText); // 에러 메시지 출력
+                	    }
+                	});
+                }else {
+                    alert("이미지와 파일의 이름을 같게 해주세요.");
+                }
             } else {
-                console.log("이미지와 파일을 선택하세요.");
+                alert("이미지와 파일을 선택하세요.");
             }
         });
     });
 </script>
+
 
 	<!-- Footer section -->
 	<footer class="footer-section">
