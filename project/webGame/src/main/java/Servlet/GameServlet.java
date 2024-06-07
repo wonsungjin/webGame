@@ -36,21 +36,22 @@ public class GameServlet extends HttpServlet {
 		String webGLName = request.getParameter("webGLName");
 		 HttpSession session = request.getSession();
          UserVO user = (UserVO) session.getAttribute("user");
-         if(user==null) response.sendRedirect("login.jsp");
-         System.out.println(user.getUser_seq());
 		UserDAO udao = new UserDAO();
 		ReplyDAO rdao = new ReplyDAO();
-		//vo들 dao에서 가져오기
-		ArrayList<ReplyVO> rvoList = rdao.replyUserSelect(webGLName);
-		UserVO uvo = udao.userSelectOne(user.getUser_seq());
-		System.out.println(uvo.getUsername());
-		//request에 저장
-		request.setAttribute("KEY_userVO",uvo);
-		request.setAttribute("KEY_webGLName",webGLName);
-		request.setAttribute("KEY_replyVOList",rvoList);
-		//게임 상세 페이지로 request 전달
-		RequestDispatcher rd = request.getRequestDispatcher("community.jsp");
-		rd.forward(request, response);
+		if(user != null) {
+		    UserVO uvo = udao.userSelectOne(user.getUser_seq());
+		    ArrayList<ReplyVO> rvoList = rdao.replyUserSelect(webGLName);
+		    System.out.println(uvo.getUsername());
+		    //request에 저장
+		    request.setAttribute("KEY_userVO", uvo);
+		    request.setAttribute("KEY_webGLName", webGLName);
+		    request.setAttribute("KEY_replyVOList", rvoList);
+		    //게임 상세 페이지로 request 전달
+		    RequestDispatcher rd = request.getRequestDispatcher("community.jsp");
+		    rd.forward(request, response);
+		} else {
+		    response.sendRedirect("login.jsp");
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
