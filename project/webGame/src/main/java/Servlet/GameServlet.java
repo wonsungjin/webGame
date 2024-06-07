@@ -61,6 +61,7 @@ public class GameServlet extends HttpServlet {
 		String webGLName = request.getParameter("webGLName");
 		String pagecode = request.getParameter("pagecode");
 		ReplyDAO rdao = new ReplyDAO();
+		Gson gson = new Gson();
 		if(pagecode.equals("replyUpdate"))
 		{
 			String updatedDate = request.getParameter("updatedDate");
@@ -81,12 +82,26 @@ public class GameServlet extends HttpServlet {
 			rvo.setReply_seq(Integer.parseInt(replySeq));
 			rvo.setCreated_date(createdDate);
 			rdao.replyUpdate(rvo);
+			
+			ArrayList<ReplyVO> rvoList = rdao.replyUserSelect(webGLName);
+			String gsonString = gson.toJson(rvoList);   
+			System.out.println(gsonString + "," + gsonString.getClass());
+			
+			PrintWriter out = response.getWriter();
+			out.print(gsonString);
 		}
 		else if(pagecode.equals("replyDelete"))
 		{
 			String replySeq = request.getParameter("replySeq");
 			System.out.println(replySeq);
 			rdao.replyDelete(Integer.parseInt(replySeq));
+			
+			ArrayList<ReplyVO> rvoList = rdao.replyUserSelect(webGLName);
+			String gsonString = gson.toJson(rvoList);   
+			System.out.println(gsonString + "," + gsonString.getClass());
+			
+			PrintWriter out = response.getWriter();
+			out.print(gsonString);
 		}
 		
 		else if(pagecode.equals("replyInsert"))
@@ -103,12 +118,19 @@ public class GameServlet extends HttpServlet {
 			rvo.setUser_seq(Integer.parseInt(userSeq));
 			rvo.setWebGL(webGLName);
 			rdao.replyInsert(rvo);
+			
+			ArrayList<ReplyVO> rvoList = rdao.replyUserSelect(webGLName);
+			String gsonString = gson.toJson(rvoList);   
+			System.out.println(gsonString + "," + gsonString.getClass());
+			
+			PrintWriter out = response.getWriter();
+			out.print(gsonString);
 		}
 		else if(pagecode.equals("gameTableAll"))
 		{
 			GameTableDAO gdao= new GameTableDAO();
 			ArrayList<GameTableVO> gvolist =  gdao.GameTableSelectAll();
-			Gson gson = new Gson();
+			
 			String gsonString = gson.toJson(gvolist);
 			System.out.println(gsonString);
 			PrintWriter out = response.getWriter();

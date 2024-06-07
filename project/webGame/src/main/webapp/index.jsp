@@ -138,7 +138,6 @@ $(document).ready(function() {
                 gameListHtml += '<div class="col-md-6">' +
                 '<div class="review-item">' +
                 '<img class="review-cover" src="img/gameLogo/'+webGL+'.png" data-webgl="' + webGL + '">' +
-                '<div class="score yellow">' + grade + '</div>' +
                 '<div class="review-text">' +
                 '<h4>' + gameName + '</h4>' +
                 '<div class="rating">' +

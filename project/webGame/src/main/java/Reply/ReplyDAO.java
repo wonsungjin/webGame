@@ -237,7 +237,7 @@ public class ReplyDAO {
 					+ " u.created_date AS user_created_date, "
 					+ " u.updated_date AS user_updated_date"
 					+ " from reply r,gametable gt,users u "
-					+ " where r.webgl = ? and u.user_seq=r.user_seq"
+					+ " where r.webgl = ? and r.webgl=gt.webgl and u.user_seq=r.user_seq"
 					+ " order by r.created_date asc";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1,webGLName);

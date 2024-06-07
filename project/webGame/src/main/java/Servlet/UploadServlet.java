@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -64,9 +65,9 @@ public class UploadServlet extends HttpServlet {
 		    response.setContentType("text/html;charset=UTF-8");
 		String pagecode = request.getParameter("pagecode");
 		if (pagecode.equals("file")) {
-		    String uploadDir = "C:\\Users\\wonseongjin.DESKTOP-VPVHF7V\\Desktop\\webGame\\project\\webGame\\src\\main\\webapp\\webGL"; // 파일을 저장할 디렉토리 경로
-		    String uploadImgDir = "C:\\Users\\wonseongjin.DESKTOP-VPVHF7V\\Desktop\\webGame\\project\\webGame\\src\\main\\webapp\\img\\gameLogo"; // 이미지를 저장할 디렉토리 경로
-
+			String userHome = System.getProperty("user.home");
+	         String uploadDir = Paths.get(userHome, "Desktop", "webGame", "project", "webGame", "src", "main", "webapp", "webGL").toString();
+	           String uploadImgDir = Paths.get(userHome, "Desktop", "webGame", "project", "webGame", "src", "main", "webapp", "img", "gameLogo").toString();
 		    DiskFileItemFactory factory = new DiskFileItemFactory();
 		    factory.setRepository(new File(uploadDir));
 		    ServletFileUpload upload = new ServletFileUpload(factory);
