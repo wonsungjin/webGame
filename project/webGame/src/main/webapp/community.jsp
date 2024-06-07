@@ -124,28 +124,6 @@ int grade=0;
             </div>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('.counter').each(function() {
-                var $this = $(this),
-                    target = parseInt($this.data('target'), 10),
-                    count = 0,
-                    increment = target / 100, // Adjust this to control the speed of the counter
-                    interval = 20; // Adjust this to control the interval of the counter
-                
-                var counterInterval = setInterval(function() {
-                    count += increment;
-                    if (count >= target) {
-                        count = target;
-                        clearInterval(counterInterval);
-                    }
-                    $this.text(Math.floor(count));
-                }, interval);
-            });
-        });
-    </script>
 </body>
 </html>
 <!-- 동적 숫자 끝 -->
@@ -153,42 +131,47 @@ int grade=0;
 <br>
             </div>
             
-        </div><%
-        for(ReplyVO rvo  : rvoList)
-{
-	reply_seq=rvo.getReply_seq();
-	user_seq = rvo.getUser_seq();
-	reply = rvo.getReply();
-	created_date = rvo.getCreated_date();
-	updated_date = rvo.getUpdated_date();
-	webGL = rvo.getWebGL();
-	grade =rvo.getGrade();
-	UserVO replyUserVo = rvo.getUserVO();
-%>
-        <ul class="community-post-list">
-            <li>
-                <div class="community-post" style="position: relative;">
-                    <div class="author-avator set-bg" data-setbg="img/authors/1.jpg"></div>
-                    <div class="post-content">
-                        <div class ="replydata">
-                        <h5><%=replyUserVo.getUsername()%><span>님이 업데이트를 게시했습니다</span></h5>
-                        <input type="hidden" name="updated_date" value=<%=updated_date%>>
-                        <input type="hidden" name="user_seq" value=<%=user_seq%>>
-                        <input type="hidden" name="reply_seq" value=<%=reply_seq%>>
-                        <div class="post-date" name="created_date" value=<%=created_date%>><%=created_date%></div>
-                        <div class="reply" name="reply"><p><%=reply%></p></div>
-                   		 </div>   
-                        <%if(uvo.getUser_seq()==user_seq) {%>
-                        <!-- 수정 버튼 -->
-                        <button class="btn btn-secondary btn-sm edit-comment" id = "modify" style="position: absolute; bottom: -50px; right: 5px;">수정</button>
-                        <!-- 삭제 버튼 -->
-                        <button class="btn btn-danger btn-sm delete-comment" id = "delete" style="position: absolute; bottom: -50px; right: -45px;">삭제</button>
-                        <%}%>
+        </div>
+        
+        <div id="commentSection">
+    <% for (ReplyVO rvo : rvoList) {
+        reply_seq = rvo.getReply_seq();
+        user_seq = rvo.getUser_seq();
+        reply = rvo.getReply();
+        created_date = rvo.getCreated_date();
+        updated_date = rvo.getUpdated_date();
+        webGL = rvo.getWebGL();
+        grade = rvo.getGrade();
+        UserVO replyUserVo = rvo.getUserVO();
+    %>
+    <ul class="community-post-list">
+        <li>
+            <div class="community-post" style="position: relative;">
+                <div class="author-avator set-bg" data-setbg="img/authors/1.jpg"></div>
+                <div class="post-content">
+                    <div class="replydata">
+                        <h5><%= replyUserVo.getUsername() %><span>님이 업데이트를 게시했습니다</span></h5>
+                        <input type="hidden" name="updated_date" value="<%= updated_date %>">
+                        <input type="hidden" name="user_seq" value="<%= user_seq %>">
+                        <input type="hidden" name="reply_seq" value="<%= reply_seq %>">
+                        <div class="post-date" name="created_date" value="<%= created_date %>"><%= created_date %></div>
+                        <div class="reply" name="reply"><p><%= reply %></p></div>
                     </div>
+                    <% if (uvo.getUser_seq() == user_seq) { %>
+                    <!-- 수정 버튼 -->
+                    <button class="btn btn-secondary btn-sm edit-comment" id="modify" style="position: absolute; bottom: -50px; right: 5px;">수정</button>
+                    <!-- 삭제 버튼 -->
+                    <button class="btn btn-danger btn-sm delete-comment" id="delete" style="position: absolute; bottom: -50px; right: -45px;">삭제</button>
+                    <% } %>
                 </div>
-            </li>
-        </ul>
-        <%}%>
+            </div>
+        </li>
+    </ul>
+    <% } %>
+</div>
+        
+        
+        
       <div class="comment-form diablo-style">
     <h4 style="color: #fff;">댓글 작성하기</h4>
     <div class="form-group">
@@ -285,15 +268,7 @@ function handleUpdate(event) {
             // 성공적으로 업데이트되었을 때의 처리
             console.log('댓글이 업데이트되었습니다.');
             
-            let postContent = $(event.target).closest('.community-post').find('.post-content').find('.reply');
-            restoreOriginalComment(postContent);
-
-            // 댓글 내용을 업데이트된 내용으로 변경
-            postContent.find('p').text(replyContent);
-
-            let communityPost = postContent.closest('.community-post');
-            communityPost.find('.edit-comment').show();
-            communityPost.find('.delete-comment').show();
+            handleReload(response);
         },
         error: function(error) {
             // 업데이트에 실패했을 때의 처리
@@ -311,8 +286,7 @@ function handleDelete(event) {
             type: 'POST',
             data: { replySeq: replySeq }, // 댓글 ID 또는 식별자를 전송
             success: function(response) {
-                postContent.remove();
-                console.log('댓글이 삭제되었습니다.');
+            	handleReload(response);
             },
             error: function(error) {
                 console.error('댓글 삭제에 실패했습니다:', error);
@@ -320,6 +294,77 @@ function handleDelete(event) {
         });
     }
 }
+
+function updateCounter(target) {
+    var $counter = $('.counter');
+    var count = 0;
+    var increment = target / 100;
+    var interval = 20;
+
+    $counter.data('target', target);
+
+    var counterInterval = setInterval(function() {
+        count += increment;
+        if (count >= target) {
+            count = target;
+            clearInterval(counterInterval);
+        }
+        $counter.text(Math.floor(count));
+    }, interval);
+}
+function handleReload(response) {
+    var rvoList = JSON.parse(response);
+
+    // 기존 댓글 목록을 비움
+    $('#commentSection').empty();
+
+    // 새로운 댓글 목록 생성
+    rvoList.forEach(function(rvo) {
+        var replySeq = rvo.reply_seq;
+        var userSeq = rvo.user_seq;
+        var reply = rvo.reply;
+        var createdDate = rvo.created_date;
+        var updatedDate = rvo.updated_date;
+        var webGL = rvo.webGL;
+        var grade = rvo.grade;
+        var replyUserVo = rvo.userVO;
+        var username = replyUserVo.username;
+        var commentHtml = '<ul class="community-post-list">' +
+        '<li>' +
+        '<div class="community-post" style="position: relative;">' +
+        '<div class="author-avator set-bg" style="background-image: url(\'img/authors/1.jpg\');"></div>' +
+        '<div class="post-content">' +
+        '<div class="replydata">' +
+        '<h5>' + username + '<span>님이 업데이트를 게시했습니다</span></h5>' +
+        '<input type="hidden" name="updated_date" value="' + updatedDate + '">' +
+        '<input type="hidden" name="user_seq" value="' + userSeq + '">' +
+        '<input type="hidden" name="reply_seq" value="' + replySeq + '">' +
+        '<div class="post-date" name="created_date" value="' + createdDate + '">' + createdDate + '</div>' +
+        '<div class="reply" name="reply"><p>' + reply + '</p></div>' +
+        '</div>';
+
+
+        if (<%=uvo.getUser_seq()%> == userSeq) {
+            commentHtml += '<button class="btn btn-secondary btn-sm edit-comment" id="modify" style="position: absolute; bottom: -50px; right: 5px;">수정</button>' +
+                '<button class="btn btn-danger btn-sm delete-comment" id="delete" style="position: absolute; bottom: -50px; right: -45px;">삭제</button>';
+        }
+
+        commentHtml += '</div></div></li></ul>';
+
+        // 새로운 댓글 목록을 추가
+        $('#commentSection').append(commentHtml);
+    });
+
+    // 댓글 수 업데이트
+    updateCounter(rvoList.length);
+
+ // 수정하기 버튼 클릭 시 호출되는 함수
+    $('.edit-comment').click(handleEdit);
+    
+    // 삭제하기 버튼 클릭 시 호출되는 함수
+    $('.delete-comment').click(handleDelete);
+}
+
 
 $(document).ready(function() {
     // 수정하기 버튼 클릭 시 호출되는 함수
@@ -330,7 +375,7 @@ $(document).ready(function() {
     
     // 작성하기 버튼 클릭 시 호출되는 함수
     $('.btn-primary').click(handleInsert);
-    
+    updateCounter(parseInt($('.counter').data('target'), 10));
     function handleInsert(event) {
         // 작성된 댓글 내용 가져오기
         let replyContent = $('#comment').val();
@@ -338,7 +383,8 @@ $(document).ready(function() {
             console.error('댓글 내용이 비어 있습니다.');
             return; // 댓글 내용이 비어 있으면 더 이상 진행하지 않고 함수 종료
         }
-        let userSeq = <%=uvo.getUser_seq()%>;
+        var userSeq = <%= uvo.getUser_seq() %>;
+
         // Ajax를 사용하여 서버로 댓글 전송
         $.ajax({
             url: '<%= request.getContextPath() %>/GameServlet?webGLName=<%=webGLName%>&pagecode=replyInsert', // 서버의 댓글 추가 API 엔드포인트
@@ -347,8 +393,7 @@ $(document).ready(function() {
             success: function(response) {
                 // 댓글 추가 성공 시 처리
                 console.log('댓글이 성공적으로 추가되었습니다.');
-                // 페이지 리로드 또는 새로운 댓글을 화면에 표시하는 등의 작업 수행
-                location.reload(); // 페이지 리로드 예시
+                handleReload(response);
             },
             error: function(error) {
                 // 댓글 추가 실패 시 처리
@@ -356,10 +401,10 @@ $(document).ready(function() {
             }
         });
     }
+
 });
 </script>
 
-</script>
 
 	<!--====== Javascripts & Jquery ======-->
 	<script src="js/jquery-3.2.1.min.js"></script>
