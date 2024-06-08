@@ -55,9 +55,9 @@
             </a>
             <div class="user-panel">
                 <% if (user != null) { %>
-                    <a href="UserServlet?action=logout">로그아웃</a>
+                    <a href="UserServlet?action=logout">logout</a>
                 <% } else { %>
-                    <a href="login.jsp">로그인</a> / <a href="register.jsp">회원가입</a>
+                    <a href="login.jsp">login</a> / <a href="register.jsp">register</a>
                 <% } %>
             </div>
             <!-- 반응형 메뉴 -->
@@ -72,8 +72,8 @@
                     <li><a href="pageinfo.html">PageInfo</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <% if (user != null) { %>
-                        <li><a href="UserServlet?action=mypage">마이페이지</a></li>
-                        <li><a href="UploadServlet?pagecode=contactMove">게임등록</a></li>
+                        <li><a href="UserServlet?action=mypage">mypage</a></li>
+                        <li><a href="UploadServlet?pagecode=contactMove">addgame</a></li>
                     <% } %>
 
                 </ul>
@@ -82,22 +82,10 @@
     </header>
     <!-- 헤더 섹션 끝 -->
 
-    <!-- 페이지 정보 섹션 -->
-    <section class="page-info-section set-bg" data-setbg="img/page-top-bg/3.jpg">
-        <div class="pi-content">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-5 col-lg-6 text-white">
-                        <h2>게임 리뷰</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- 페이지 정보 섹션 끝 -->
+
 
  <!-- 페이지 섹션 -->
+ <div class="page-section community-page set-bg" data-setbg="img/community-bg.jpg">
 <section class="page-section review-page spad">
     <div class="container">
         <div class="row" id="gameList">
@@ -105,6 +93,7 @@
         </div>
     </div>
 </section>
+</div>
 <!-- 페이지 섹션 끝 -->
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -132,22 +121,23 @@ $(document).ready(function() {
                     };
                 };
 
-                gameListHtml += '<div class="col-md-6">' +
-                '<div class="review-item">' +
+                gameListHtml += '<div class="col-md-6" style="color: white;">' +
+                '<div class="review-item" style="color: white;">' +
                 '<img class="review-cover" src="img/gameLogo/'+webGL+'.png" data-webgl="' + webGL + '">' +
-                '<div class="review-text">' +
-                '<h4>' + gameName + '</h4>' +
-                '<div class="rating">' +
+                '<div class="review-text" style="color: white;">' +
+                '<h4 style="color: white;">' + gameName + '</h4>' +
+                '<div class="rating" style="color: white;">' +
                 '<i class="fa fa-star"></i>' +
                 '<i class="fa fa-star"></i>' +
                 '<i class="fa fa-star"></i>' +
                 '<i class="fa fa-star"></i>' +
                 '<i class="fa fa-star is-fade"></i>' +
                 '</div>' +
-                '<p>' + contents + '</p>' +
+                '<p style="color: white;">' + contents + '</p>' +
                 '</div>' +
                 '</div>' +
                 '</div>';
+
 
 
             });

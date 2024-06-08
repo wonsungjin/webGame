@@ -66,8 +66,9 @@
 <body>
     <div class="login-container">
         <div class="header">
-            <img src="logo.png" alt="Game Warrior Logo" class="logo">
-            <h1 class="title">Game Warrior</h1>
+            <a class="site-logo" href="index.jsp">
+                <img src="img/logo.png" alt="Game Warrior Logo">
+            </a>
         </div>
         <div class="login-form">
             <h2>Register</h2>

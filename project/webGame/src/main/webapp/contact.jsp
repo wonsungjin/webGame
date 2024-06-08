@@ -45,33 +45,41 @@
 		<div class="loader"></div>
 	</div>
 
-	<!-- Header section -->
-	<header class="header-section">
-		<div class="container">
-			<!-- logo -->
-			<a class="site-logo" href="index.html">
-				<img src="img/logo.png" alt="">
-			</a>
-			<div class="user-panel">
-				<a href="#">Login</a>  /  <a href="#">Register</a>
-			</div>
-			<!-- responsive -->
-			<div class="nav-switch">
-				<i class="fa fa-bars"></i>
-			</div>
-			<!-- site menu -->
-			<nav class="main-menu">
-				<ul>
-					<li><a href="index.html">Home</a></li>
-					<li><a href="review.html">Games</a></li>
-					<li><a href="categories.html">Blog</a></li>
-					<li><a href="community.html">Forums</a></li>
-					<li><a href="contact.html">Contact</a></li>
-				</ul>
-			</nav>
-		</div>
-	</header>
-	<!-- Header section end -->
+	<!-- 헤더 섹션 -->
+    <header class="header-section">
+        <div class="container">
+            <!-- 로고 -->
+            <a class="site-logo" href="index.jsp">
+                <img src="img/logo.png" alt="">
+            </a>
+            <div class="user-panel">
+                <% if (user != null) { %>
+                    <a href="UserServlet?action=logout">logout</a>
+                <% } else { %>
+                    <a href="login.jsp">login</a> / <a href="register.jsp">register</a>
+                <% } %>
+            </div>
+            <!-- 반응형 메뉴 -->
+            <div class="nav-switch">
+                <i class="fa fa-bars"></i>
+            </div>
+            <!-- 사이트 메뉴 -->
+            <nav class="main-menu">
+                <ul>
+                    <li><a href="index.jsp">Home</a></li>
+                    <li><a href="document.html">Document</a></li>
+                    <li><a href="pageinfo.html">PageInfo</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <% if (user != null) { %>
+                        <li><a href="UserServlet?action=mypage">mypage</a></li>
+                        <li><a href="UploadServlet?pagecode=contactMove">addgame</a></li>
+                    <% } %>
+
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <!-- 헤더 섹션 끝 -->
 
 
 	<!-- Page info section -->
