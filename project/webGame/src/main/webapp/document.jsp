@@ -39,6 +39,44 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <!-- 인라인 스타일로 배경 이미지 추가 -->
+    <style>
+        body {
+            background-image: url('img/community-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: white; /* 텍스트 색상을 흰색으로 설정 */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 60px; /* 상단 메뉴와 겹치지 않도록 패딩 추가 */
+        }
+        .black-tab {
+            background-color: rgba(0, 0, 0, 0.8); /* 검정색 배경과 약간의 투명도 */
+            width: 75%; /* 가로 3/4 */
+            height: 80vh; /* 세로 길이 (적절히 조절 가능) */
+            padding: 20px;
+            box-sizing: border-box; /* 패딩을 포함한 박스 크기 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white; /* 텍스트 색상 */
+        }
+        .tab-content {
+            width: 100%; /* 콘텐츠 가로 크기 */
+            text-align: center; /* 텍스트 중앙 정렬 */
+        }
+    </style>
 </head>
 <body>
     <!-- 페이지 프리로더 -->
@@ -69,101 +107,31 @@
                 <ul>
                     <li><a href="index.jsp">Home</a></li>
                     <li><a href="document.jsp">Document</a></li>
-                    <li><a href="pageinfo.jsp">PageInfo</a></li>
+                    <li><a href="pageinfo.html">PageInfo</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <% if (user != null) { %>
                         <li><a href="UserServlet?action=mypage">mypage</a></li>
                         <li><a href="UploadServlet?pagecode=contactMove">addgame</a></li>
                     <% } %>
-
                 </ul>
             </nav>
         </div>
     </header>
     <!-- 헤더 섹션 끝 -->
 
-
-
- <!-- 페이지 섹션 -->
- <div class="page-section community-page set-bg" data-setbg="img/community-bg.jpg">
-<section class="page-section review-page spad">
-    <div class="container">
-        <div class="row" id="gameList">
-            <!-- 게임 목록은 JavaScript에서 동적으로 추가될 예정입니다. -->
+    <!-- 검정색 탭을 포함하는 컨텐츠 래퍼 -->
+    <div class="content-wrapper">
+        <div class="black-tab">
+            <div class="tab-content">
+                <h2 style = "color : white">How to add games</h2>
+                <p style = "color : white">1: Log in and click the addgame button at the top</p>
+                <p style = "color : white">2: Register the webgl version build files of the game to be registered as compressed files.</p>
+                <p style = "color : white">3: Enter the name and description of the game you want to register and attach an image to be registered as a thumbnail. However, the name of the attached image file must be the same as the game's build file name.</p>
+            </div>
         </div>
     </div>
-</section>
-</div>
-<!-- 페이지 섹션 끝 -->
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function() {
-    $.ajax({
-        method: 'POST',
-        url: '<%= request.getContextPath() %>/GameServlet?pagecode=gameTableAll',
-        success: function(response) {
-            var myval_obj = JSON.parse(response);
-
-            var gameListHtml = ""; // gameListHtml 변수를 반복문 외부에 선언
-
-            myval_obj.forEach(function(item) {
-                var webGL = item["webGL"];
-                var gameName = item["gameName"];
-                var contents = item["contents"];
-                var grade = item["grade"];
-                var updated_date = item["updated_date"];
-                var user_seq = item["user_seq"];
-
-                var clickHandler = function(webGL) {
-                    return function() {
-                        redirectToCommunity(webGL);
-                    };
-                };
-
-                gameListHtml += '<div class="col-md-6" style="color: white;">' +
-                '<div class="review-item" style="color: white;">' +
-                '<img class="review-cover" src="img/gameLogo/'+webGL+'.png" data-webgl="' + webGL + '">' +
-                '<div class="review-text" style="color: white;">' +
-                '<h4 style="color: white;">' + gameName + '</h4>' +
-                '<div class="rating" style="color: white;">' +
-                '<i class="fa fa-star"></i>' +
-                '<i class="fa fa-star"></i>' +
-                '<i class="fa fa-star"></i>' +
-                '<i class="fa fa-star"></i>' +
-                '<i class="fa fa-star is-fade"></i>' +
-                '</div>' +
-                '<p style="color: white;">' + contents + '</p>' +
-                '</div>' +
-                '</div>' +
-                '</div>';
-
-
-
-            });
-
-            $("#gameList").append(gameListHtml);
-
-            $(".review-cover").click(function() {
-                var webGL = $(this).attr('data-webgl');
-                redirectToCommunity(webGL);
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error(xhr.responseText);
-        }
-    });
-});
-
-</script>
- 
-
-<script>
-    function redirectToCommunity(webGLName) {
-        var url = '<%= request.getContextPath() %>/GameServlet?webGLName=' + encodeURIComponent(webGLName);
-        window.location.href = url;
-    }
-</script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!--====== 자바스크립트 및 제이쿼리 ======-->
     <script src="js/jquery-3.2.1.min.js"></script>

@@ -359,7 +359,7 @@
             <nav class="main-menu">
                 <ul>
                     <li><a href="index.jsp">Home</a></li>
-                    <li><a href="document.html">Document</a></li>
+                    <li><a href="document.jsp">Document</a></li>
                     <li><a href="pageinfo.html">PageInfo</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <c:if test="${user != null}">
