@@ -41,12 +41,9 @@ public class GameServlet extends HttpServlet {
 		if(user != null) {
 		    UserVO uvo = udao.userSelectOne(user.getUser_seq());
 		    ArrayList<ReplyVO> rvoList = rdao.replyUserSelect(webGLName);
-		    System.out.println(uvo.getUsername());
-		    //request에 저장
 		    request.setAttribute("KEY_userVO", uvo);
 		    request.setAttribute("KEY_webGLName", webGLName);
 		    request.setAttribute("KEY_replyVOList", rvoList);
-		    //게임 상세 페이지로 request 전달
 		    RequestDispatcher rd = request.getRequestDispatcher("community.jsp");
 		    rd.forward(request, response);
 		} else {
@@ -70,12 +67,6 @@ public class GameServlet extends HttpServlet {
 	        String createdDate = request.getParameter("createdDate");
 	        String replyContent = request.getParameter("replyContent");
 	        
-	        // 추출한 데이터 사용 예시
-	        System.out.println("Updated Date: " + updatedDate);
-	        System.out.println("User Seq: " + userSeq);
-	        System.out.println("Reply Seq: " + replySeq);
-	        System.out.println("Created Date: " + createdDate);
-	        System.out.println("Reply Content: " + replyContent);
 			ReplyVO rvo = new ReplyVO();
 			rvo.setReply(replyContent);
 			rvo.setUser_seq(Integer.parseInt(userSeq));
@@ -85,7 +76,6 @@ public class GameServlet extends HttpServlet {
 			
 			ArrayList<ReplyVO> rvoList = rdao.replyUserSelect(webGLName);
 			String gsonString = gson.toJson(rvoList);   
-			System.out.println(gsonString + "," + gsonString.getClass());
 			
 			PrintWriter out = response.getWriter();
 			out.print(gsonString);
@@ -93,12 +83,10 @@ public class GameServlet extends HttpServlet {
 		else if(pagecode.equals("replyDelete"))
 		{
 			String replySeq = request.getParameter("replySeq");
-			System.out.println(replySeq);
 			rdao.replyDelete(Integer.parseInt(replySeq));
 			
 			ArrayList<ReplyVO> rvoList = rdao.replyUserSelect(webGLName);
 			String gsonString = gson.toJson(rvoList);   
-			System.out.println(gsonString + "," + gsonString.getClass());
 			
 			PrintWriter out = response.getWriter();
 			out.print(gsonString);
@@ -109,10 +97,6 @@ public class GameServlet extends HttpServlet {
 	        String userSeq = request.getParameter("userSeq");
 	        String replyContent = request.getParameter("replyContent");
 	        
-	        // 추출한 데이터 사용 예시
-	        System.out.println("User Seq: " + userSeq);
-	        System.out.println("Reply Content: " + replyContent);
-	        System.out.println("WebGLName: " + webGLName);
 			ReplyVO rvo = new ReplyVO();
 			rvo.setReply(replyContent);
 			rvo.setUser_seq(Integer.parseInt(userSeq));
@@ -121,7 +105,6 @@ public class GameServlet extends HttpServlet {
 			
 			ArrayList<ReplyVO> rvoList = rdao.replyUserSelect(webGLName);
 			String gsonString = gson.toJson(rvoList);   
-			System.out.println(gsonString + "," + gsonString.getClass());
 			
 			PrintWriter out = response.getWriter();
 			out.print(gsonString);
@@ -132,7 +115,6 @@ public class GameServlet extends HttpServlet {
 			ArrayList<GameTableVO> gvolist =  gdao.GameTableSelectAll();
 			
 			String gsonString = gson.toJson(gvolist);
-			System.out.println(gsonString);
 			PrintWriter out = response.getWriter();
 			out.print(gsonString);
 		}

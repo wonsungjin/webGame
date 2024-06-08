@@ -8,13 +8,11 @@
 <%@ page import="java.util.List" %>
 
 <%
-    // 세션 변수를 중복 선언하지 않도록 기존 세션이 있는지 확인하고 가져옵니다.
     HttpSession currentSession = request.getSession(false);
     UserVO user = null;
     if (currentSession != null) {
         user = (UserVO) currentSession.getAttribute("user");
     }
-    System.out.println(user);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -116,7 +114,6 @@ $(document).ready(function() {
         method: 'POST',
         url: '<%= request.getContextPath() %>/GameServlet?pagecode=gameTableAll',
         success: function(response) {
-            console.log(response);
             var myval_obj = JSON.parse(response);
 
             var gameListHtml = ""; // gameListHtml 변수를 반복문 외부에 선언
@@ -155,7 +152,6 @@ $(document).ready(function() {
 
             });
 
-            // 생성된 HTML을 게임 목록에 추가
             $("#gameList").append(gameListHtml);
 
             $(".review-cover").click(function() {
@@ -173,7 +169,6 @@ $(document).ready(function() {
  
 
 <script>
-    // 커뮤니티 페이지로 리다이렉트하는 함수
     function redirectToCommunity(webGLName) {
         var url = '<%= request.getContextPath() %>/GameServlet?webGLName=' + encodeURIComponent(webGLName);
         window.location.href = url;

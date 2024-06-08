@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="css/login.css">
     <script>
         $(document).ready(function() {
-            // ID 중복 검사
             $('#checkId').click(function() {
                 var id = $('#id').val();
                 if (id.trim() === "") {
@@ -23,7 +22,6 @@
                 checkDuplicate('id', id);
             });
 
-            // 닉네임 중복 검사
             $('#checkNickname').click(function() {
                 var nickname = $('#nickname').val();
                 if (nickname.trim() === "") {
@@ -33,7 +31,6 @@
                 checkDuplicate('nickname', nickname);
             });
 
-            // 이메일 중복 검사
             $('#checkEmail').click(function() {
                 var email = $('#userid').val() + "@" + $('#emailDomain').val();
                 if ($('#emailDomain').val() === "other") {
@@ -46,7 +43,6 @@
                 checkDuplicate('email', email);
             });
 
-            // 중복 검사를 위한 AJAX 호출
             function checkDuplicate(field, value) {
                 $.post('CheckDuplicateFieldServlet', { field: field, value: value }, function(response) {
                     if (response === "DUPLICATE") {
@@ -57,7 +53,6 @@
                 });
             }
 
-            // 이메일 도메인 변경 시 처리
             $('#emailDomain').change(function() {
                 if ($(this).val() === "other") {
                     $('#otherDomain').show().attr('required', true);
