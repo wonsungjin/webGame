@@ -108,7 +108,7 @@ if (currentSession != null) {
 
 	<!-- 페이지 섹션 -->
 	<div class="page-section community-page set-bg"
-		data-setbg="img/community-bg.jpg">
+		data-setbg="img/Diablo-3.jpg">
 		<section class="page-section redjiew-page spad">
 			<div class="container">
 				<div class="row" id="gameList">
@@ -144,24 +144,24 @@ $(document).ready(function() {
                     };
                 };
 
-                gameListHtml += '<div class="col-md-6" style="color: white;">' +
-                '<div class="review-item" style="color: white;">' +
-                '<img class="review-cover" src="img/gameLogo/'+webGL+'.png" data-webgl="' + webGL + '">' +
-                '<div class="review-text" style="color: white;">' +
+                gameListHtml += '<div class="col-md-6" style="color: black;">' +
+                '<div class="review-item" style="background-color: transparent; border: 1px solid black;">' +
+                '<img class="review-cover" src="img/gameLogo/' + webGL + '.png" data-webgl="' + webGL + '" style="width: 100%; height: 400px; object-fit: cover;">' +
+                '<div class="review-text" style="color: white; border: 1px solid black; background-color: transparent;">' +
                 '<h4 style="color: white;">' + gameName + '</h4>' +
-                '<div class="rating" style="color: white;">' +
+                '<div class="rating" style="color: white; background-color: transparent;">' +
                 '<i class="fa fa-star"></i>' +
                 '<i class="fa fa-star"></i>' +
                 '<i class="fa fa-star"></i>' +
                 '<i class="fa fa-star"></i>' +
                 '<i class="fa fa-star is-fade"></i>' +
                 '</div>' +
-                '<p style="color: white;">' + contents + '</p>' +
+                '<div style="color: black; background-color: transparent;">' + 
+                '<p style="margin: 0; font-size: 18px;">' + contents + '</p>' +
+                '</div>' +
                 '</div>' +
                 '</div>' +
                 '</div>';
-
-
 
             });
 
