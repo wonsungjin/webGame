@@ -109,7 +109,7 @@ if (currentSession != null) {
 	<!-- 페이지 섹션 -->
 	<div class="page-section community-page set-bg"
 		data-setbg="img/community-bg.jpg">
-		<section class="page-section review-page spad">
+		<section class="page-section redjiew-page spad">
 			<div class="container">
 				<div class="row" id="gameList">
 					<!-- 게임 목록은 JavaScript에서 동적으로 추가될 예정입니다. -->
