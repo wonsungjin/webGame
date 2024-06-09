@@ -21,12 +21,9 @@ public class ReplyDAO {
 		PreparedStatement pstmt = null;
 		int insertRows = 0;
 
-		// 파라미터가 잘 넘어왔는지 확인용 코드 (seq=0, regdate=null)
-		System.out.println(rvo.toString());
 		
 		try 
 		{
-			// conn = moc.oracleConn();
 			ds = moc.myOracleDataSource();
 			conn = ds.getConnection();
 			if (conn != null)
@@ -56,12 +53,8 @@ public class ReplyDAO {
 		PreparedStatement pstmt = null;
 		int updateRows = 0;
 
-		// 파라미터가 잘 넘어왔는지 확인용 코드 (seq=0, regdate=null)
-		System.out.println(rvo.toString());
-		
 		try 
 		{
-			// conn = moc.oracleConn();
 			ds = moc.myOracleDataSource();
 			conn = ds.getConnection();
 			if (conn != null)
@@ -90,7 +83,6 @@ public class ReplyDAO {
 		ReplyVO rvo = null;
 		try 
 		{
-			// conn = moc.oracleConn();
 			ds = moc.myOracleDataSource();
 			conn = ds.getConnection();
 			if (conn != null)
@@ -128,7 +120,6 @@ public class ReplyDAO {
 		ReplyVO rvo = null;
 		try 
 		{
-			// conn = moc.oracleConn();
 			ds = moc.myOracleDataSource();
 			conn = ds.getConnection();
 			if (conn != null)
@@ -220,7 +211,6 @@ public class ReplyDAO {
 		ArrayList<ReplyVO> list = null;
 		try 
 		{
-			// conn = moc.oracleConn();
 			ds = moc.myOracleDataSource();
 			conn = ds.getConnection();
 			if (conn != null)
@@ -233,7 +223,7 @@ public class ReplyDAO {
 					+ " gt.grade AS game_grade, "
 					+ " gt.created_date AS game_created_date, "
 					+ " gt.updated_date AS game_updated_date,"
-					+ " u.userid, u.username, u.password, u.email, "
+					+ " u.userid, u.username, u.password, u.useremail, "
 					+ " u.created_date AS user_created_date, "
 					+ " u.updated_date AS user_updated_date"
 					+ " from reply r,gametable gt,users u "

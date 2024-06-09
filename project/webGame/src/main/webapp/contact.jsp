@@ -33,13 +33,11 @@
 </head>
 
 <%
-    // 세션 변수를 중복 선언하지 않도록 기존 세션이 있는지 확인하고 가져옵니다.
     HttpSession currentSession = request.getSession(false);
     UserVO user = null;
     if (currentSession != null) {
         user = (UserVO) currentSession.getAttribute("user");
     }
-    System.out.println(user);
 %>
 <body>
 	<!-- Page Preloder -->
@@ -47,33 +45,41 @@
 		<div class="loader"></div>
 	</div>
 
-	<!-- Header section -->
-	<header class="header-section">
-		<div class="container">
-			<!-- logo -->
-			<a class="site-logo" href="index.html">
-				<img src="img/logo.png" alt="">
-			</a>
-			<div class="user-panel">
-				<a href="#">Login</a>  /  <a href="#">Register</a>
-			</div>
-			<!-- responsive -->
-			<div class="nav-switch">
-				<i class="fa fa-bars"></i>
-			</div>
-			<!-- site menu -->
-			<nav class="main-menu">
-				<ul>
-					<li><a href="index.html">Home</a></li>
-					<li><a href="review.html">Games</a></li>
-					<li><a href="categories.html">Blog</a></li>
-					<li><a href="community.html">Forums</a></li>
-					<li><a href="contact.html">Contact</a></li>
-				</ul>
-			</nav>
-		</div>
-	</header>
-	<!-- Header section end -->
+	<!-- 헤더 섹션 -->
+    <header class="header-section">
+        <div class="container">
+            <!-- 로고 -->
+            <a class="site-logo" href="index.jsp">
+                <img src="img/logo.png" alt="">
+            </a>
+            <div class="user-panel">
+                <% if (user != null) { %>
+                    <a href="UserServlet?action=logout">logout</a>
+                <% } else { %>
+                    <a href="login.jsp">login</a> / <a href="register.jsp">register</a>
+                <% } %>
+            </div>
+            <!-- 반응형 메뉴 -->
+            <div class="nav-switch">
+                <i class="fa fa-bars"></i>
+            </div>
+            <!-- 사이트 메뉴 -->
+            <nav class="main-menu">
+                <ul>
+                    <li><a href="index.jsp">Home</a></li>
+                    <li><a href="document.jsp">Document</a></li>
+                    <li><a href="pageinfo.jsp">PageInfo</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <% if (user != null) { %>
+                        <li><a href="UserServlet?action=mypage">mypage</a></li>
+                        <li><a href="UploadServlet?pagecode=contactMove">addgame</a></li>
+                    <% } %>
+
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <!-- 헤더 섹션 끝 -->
 
 
 	<!-- Page info section -->
@@ -172,17 +178,14 @@
         var imageFileName = null;
         var fileFileName = null;
 
-        // 이미지 업로드 버튼 클릭 시
         $("#upload-button").click(function() {
             $("#image-upload").trigger("click"); // 이미지 업로드 input 클릭 이벤트 트리거
         });
 
-        // 파일 업로드 버튼 클릭 시
         $("#file-upload-button").click(function() {
             $("#file-upload").trigger("click"); // 파일 업로드 input 클릭 이벤트 트리거
         });
         
-        // 이미지 선택 시
         $("#image-upload").change(function(event) {
             var input = event.target;
             var reader = new FileReader();
@@ -190,27 +193,22 @@
                 var dataURL = reader.result;
                 $("#image-preview").attr("src", dataURL); // 미리보기 이미지 업데이트
                 imageData = input.files[0]; // 이미지 데이터 저장
-                // 이미지 파일 이름 (확장자 제외)
                 imageFileName = imageData.name.split('.').slice(0, -1).join('.');
             };
             reader.readAsDataURL(input.files[0]);
         });
 
-        // 파일 선택 시
         $("#file-upload").change(function(event) {
             fileData = event.target.files[0]; // 파일 데이터 저장
             if (fileData) {
                 $("#file-name").text("선택한 파일: " + fileData.name); // 선택한 파일 이름을 업데이트
-                // 파일 데이터 이름 (확장자 제외)
                 fileFileName = fileData.name.split('.').slice(0, -1).join('.');
             } else {
                 $("#file-name").text(""); // 파일이 선택되지 않은 경우
             }
         });
 
-        // 저장 버튼 클릭 시
         $("#save-button").click(function() {
-            // 파일 이름이 확장자를 제외하고 동일한지 확인
             if (imageData && fileData) { // 이미지와 파일 데이터가 모두 존재할 경우에만 실행
                 if (imageFileName === fileFileName) {
                 	var formData = new FormData();
@@ -222,17 +220,14 @@
                 	if (webGL.lastIndexOf(".") !== -1) {
                 	    webGL = webGL.substring(0, webGL.lastIndexOf("."));
                 	}
-                	// 이미지와 파일 데이터 추가
                 	formData.append('image', imageData);
                 	formData.append('file', fileData);
 
-                	// 게임 이름, 설명 및 사용자 시퀀스 데이터 추가
                 	formData.append('gameName', gameName);
                 	formData.append('gameContent', gameContent);
                 	formData.append('user_seq', user_seq);
                 	formData.append('webGL', webGL);
 
-                	// AJAX를 사용하여 이미지와 파일 및 추가 데이터를 서버로 전송
                 	$.ajax({
                 	    url: '<%= request.getContextPath() %>/UploadServlet?pagecode=file', // 파일 업로드를 처리하는 서버 측 스크립트의 URL
                 	    type: 'POST',
@@ -241,7 +236,6 @@
                 	    contentType: false,
                 	    success: function(response) {
                 	        console.log(response); // 성공 시 응답 출력
-                	        // 여기에 추가적인 작업을 수행할 수 있습니다.
                 	    },
                 	    error: function(xhr, status, error) {
                 	        console.error(xhr.responseText); // 에러 메시지 출력
