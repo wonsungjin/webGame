@@ -21,5 +21,4 @@ public class UserVO
 	private String useremail;
 	private String created_date;
 	private String updated_date;
-	//추가부분
 }

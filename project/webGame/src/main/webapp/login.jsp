@@ -11,14 +11,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Game Warrior</title>
     <link rel="stylesheet" href="css/login.css">
+    <style>
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .site-logo img {
+            max-width: 150px; /* Adjust the size of the logo as needed */
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">
+        <!-- 로고 추가 -->
         <div class="header">
-        <!--
-            <img src="logo.png" alt="Game Warrior Logo" class="logo"> 일단 로고 에러나서 주석처리
-            -->
-            <h1 class="title">Game Warrior</h1>
+            <a class="site-logo" href="index.jsp">
+                <img src="img/logo.png" alt="Game Warrior Logo">
+            </a>
         </div>
         <div class="login-form">
             <h2>Login</h2>

@@ -32,42 +32,52 @@
 	<![endif]-->
 
 </head>
+<%
+UserVO uvo = (UserVO) request.getAttribute("KEY_userVO");
+String webGLName = (String) request.getAttribute("KEY_webGLName"); 
+%>
 <body>
 	<!-- Page Preloder -->
 	<div id="preloder">
 		<div class="loader"></div>
 	</div>
 
-	<!-- Header section -->
-	<header class="header-section">
-		<div class="container">
-			<!-- logo -->
-			<a class="site-logo" href="index.html">
-				<img src="img/logo.png" alt="">
-			</a>
-			<div class="user-panel">
-				<a href="#">Login</a>  /  <a href="#">Register</a>
-			</div>
-			<!-- responsive -->
-			<div class="nav-switch">
-				<i class="fa fa-bars"></i>
-			</div>
-			<!-- site menu -->
-			<nav class="main-menu">
-				<ul>
-					<li><a href="index.html">Home</a></li>
-					<li><a href="review.html">Games</a></li>
-					<li><a href="categories.html">Blog</a></li>
-					<li><a href="community.html">Forums</a></li>
-					<li><a href="contact.html">Contact</a></li>
-				</ul>
-			</nav>
-		</div>
-	</header>
-<%
-UserVO uvo = (UserVO) request.getAttribute("KEY_userVO");
-String webGLName = (String) request.getAttribute("KEY_webGLName"); 
-%>
+	<!-- 헤더 섹션 -->
+    <header class="header-section">
+        <div class="container">
+            <!-- 로고 -->
+            <a class="site-logo" href="index.jsp">
+                <img src="img/logo.png" alt="">
+            </a>
+            <div class="user-panel">
+                <% if (uvo != null) { %>
+                    <a href="UserServlet?action=logout">logout</a>
+                <% } else { %>
+                    <a href="login.jsp">login</a> / <a href="register.jsp">register</a>
+                <% } %>
+            </div>
+            <!-- 반응형 메뉴 -->
+            <div class="nav-switch">
+                <i class="fa fa-bars"></i>
+            </div>
+            <!-- 사이트 메뉴 -->
+            <nav class="main-menu">
+                <ul>
+                    <li><a href="index.jsp">Home</a></li>
+                    <li><a href="document.jsp">Document</a></li>
+                    <li><a href="pageinfo.html">PageInfo</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <% if (uvo != null) { %>
+                        <li><a href="UserServlet?action=mypage">mypage</a></li>
+                        <li><a href="UploadServlet?pagecode=contactMove">addgame</a></li>
+                    <% } %>
+
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <!-- 헤더 섹션 끝 -->
+
 
 <section class="page-section community-page set-bg" data-setbg="img/community-bg.jpg">
     <!-- 유니티 WebGL 빌드를 추가하는 부분 -->
@@ -186,7 +196,6 @@ int grade=0;
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 function handleEdit(event) {
-    // 기존 이벤트 핸들러 제거
     $('.cancel-update').off('click', handleCancel);
     $('.update-comment').off('click', handleUpdate);
 
@@ -194,7 +203,6 @@ function handleEdit(event) {
     let commentText = postContent.find('p').text();
     let originalHtml = postContent.html();
     
-    // 댓글 요소에 데이터를 저장
     postContent.data('original-html', originalHtml);
     postContent.data('original-comment-text', commentText);
     
@@ -207,9 +215,7 @@ function handleEdit(event) {
         <button class="btn btn-danger btn-sm cancel-update" style="position: absolute; bottom: -50px; right: -45px;">취소</button>
     `);
 
-    // 수정하기 버튼에 클릭 이벤트 리스너 추가
     $('.update-comment').on('click', handleUpdate);
-    // 취소 버튼에 클릭 이벤트 리스너 추가
     $('.cancel-update').on('click', handleCancel);
 }
 
@@ -222,7 +228,6 @@ function restoreOriginalComment(postContent) {
     let originalHtml = postContent.data('original-html');
     let originalCommentText = postContent.data('original-comment-text');
     
-    // 원래 상태 복원
     postContent.html(originalHtml);
     
     let communityPost = postContent.closest('.community-post');
@@ -235,7 +240,6 @@ function restoreOriginalComment(postContent) {
 function handleUpdate(event) {
     let replyData = $(event.target).closest('.community-post').find('.replydata');
     
-    // 해당 div 내의 hidden input 요소들의 값을 가져옴
     let updatedDate = replyData.find('input[name="updated_date"]').val();
     let userSeq = replyData.find('input[name="user_seq"]').val();
     let replySeq = replyData.find('input[name="reply_seq"]').val();
@@ -246,14 +250,6 @@ function handleUpdate(event) {
         return; // 댓글 내용이 비어 있으면 더 이상 진행하지 않고 함수 종료
     }
     
-    // 가져온 데이터 사용 예시
-    console.log('Updated Date:', updatedDate);
-    console.log('User Seq:', userSeq);
-    console.log('Reply Seq:', replySeq);
-    console.log('Created Date:', createdDate);
-    console.log('Reply Content:', replyContent);
-    
-    // AJAX를 사용하여 서버에 댓글 업데이트 요청을 보냄
     $.ajax({
         url: '<%= request.getContextPath() %>/GameServlet?webGLName=<%=webGLName%>&pagecode=replyUpdate',
         type: 'POST',
@@ -265,13 +261,11 @@ function handleUpdate(event) {
             replyContent: replyContent
         },
         success: function(response) {
-            // 성공적으로 업데이트되었을 때의 처리
             console.log('댓글이 업데이트되었습니다.');
             
             handleReload(response);
         },
         error: function(error) {
-            // 업데이트에 실패했을 때의 처리
             console.error('댓글 업데이트에 실패했습니다:', error);
         }
     });
@@ -315,10 +309,8 @@ function updateCounter(target) {
 function handleReload(response) {
     var rvoList = JSON.parse(response);
 
-    // 기존 댓글 목록을 비움
     $('#commentSection').empty();
 
-    // 새로운 댓글 목록 생성
     rvoList.forEach(function(rvo) {
         var replySeq = rvo.reply_seq;
         var userSeq = rvo.user_seq;
@@ -351,33 +343,25 @@ function handleReload(response) {
 
         commentHtml += '</div></div></li></ul>';
 
-        // 새로운 댓글 목록을 추가
         $('#commentSection').append(commentHtml);
     });
 
-    // 댓글 수 업데이트
     updateCounter(rvoList.length);
 
- // 수정하기 버튼 클릭 시 호출되는 함수
     $('.edit-comment').click(handleEdit);
     
-    // 삭제하기 버튼 클릭 시 호출되는 함수
     $('.delete-comment').click(handleDelete);
 }
 
 
 $(document).ready(function() {
-    // 수정하기 버튼 클릭 시 호출되는 함수
     $('.edit-comment').click(handleEdit);
     
-    // 삭제하기 버튼 클릭 시 호출되는 함수
     $('.delete-comment').click(handleDelete);
     
-    // 작성하기 버튼 클릭 시 호출되는 함수
     $('.btn-primary').click(handleInsert);
     updateCounter(parseInt($('.counter').data('target'), 10));
     function handleInsert(event) {
-        // 작성된 댓글 내용 가져오기
         let replyContent = $('#comment').val();
         if (!replyContent || replyContent.trim() === '') {
             console.error('댓글 내용이 비어 있습니다.');
@@ -385,18 +369,15 @@ $(document).ready(function() {
         }
         var userSeq = <%= uvo.getUser_seq() %>;
 
-        // Ajax를 사용하여 서버로 댓글 전송
         $.ajax({
             url: '<%= request.getContextPath() %>/GameServlet?webGLName=<%=webGLName%>&pagecode=replyInsert', // 서버의 댓글 추가 API 엔드포인트
             type: 'POST',
             data: { userSeq: userSeq, replyContent: replyContent }, // 작성된 댓글 내용 전송
             success: function(response) {
-                // 댓글 추가 성공 시 처리
                 console.log('댓글이 성공적으로 추가되었습니다.');
                 handleReload(response);
             },
             error: function(error) {
-                // 댓글 추가 실패 시 처리
                 console.error('댓글 추가에 실패했습니다:', error);
             }
         });

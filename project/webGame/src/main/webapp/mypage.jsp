@@ -7,7 +7,6 @@
 <%@ page import="Reply.ReplyVO"%>
 
 <%
-    // 기존 세션이 없으면 null 반환
     HttpSession currentSession = request.getSession(false);
     UserVO user = null;
     ArrayList<ReplyVO> userReplies = null;
@@ -15,7 +14,6 @@
         user = (UserVO) currentSession.getAttribute("user");
         userReplies = (ArrayList<ReplyVO>) currentSession.getAttribute("userReplies");
     }
-    // 사용자 정보가 없으면 로그인 페이지로 리다이렉트
     if (user == null) {
         response.sendRedirect("login.jsp");
         return;
@@ -195,13 +193,11 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script>
         $(document).ready(function(){
-            // 회원정보 수정 성공 시 알림
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('update') === 'success') {
                 alert('회원정보가 수정되었습니다.');
             }
             
-            // ID 중복 검사
             $('#checkId').click(function() {
                 var id = $('#id').val();
                 if (id.trim() === "") {
@@ -211,7 +207,6 @@
                 checkDuplicate('id', id);
             });
 
-            // 닉네임 중복 검사
             $('#checkNickname').click(function() {
                 var nickname = $('#nickname').val();
                 if (nickname.trim() === "") {
@@ -221,7 +216,6 @@
                 checkDuplicate('nickname', nickname);
             });
 
-            // 이메일 중복 검사
             $('#checkEmail').click(function() {
                 var email = $('#userid').val() + "@" + $('#emailDomain').val();
                 if ($('#emailDomain').val() === "other") {
@@ -234,7 +228,6 @@
                 checkDuplicate('email', email);
             });
 
-            // 중복 검사를 위한 AJAX 호출
             function checkDuplicate(field, value) {
                 $.post('CheckDuplicateFieldServlet', { field: field, value: value }, function(response) {
                     if (response === "DUPLICATE") {
@@ -245,7 +238,6 @@
                 });
             }
 
-            // 이메일 도메인 변경 시 처리
             $('#emailDomain').change(function() {
                 if ($(this).val() === "other") {
                     $('#otherDomain').show().attr('required', true);
@@ -254,14 +246,12 @@
                 }
             });
 
-         // 파일 선택 시 파일명 표시 색상 변경
             $('#file-upload').change(function() {
                 var fileName = $(this).val().split('\\').pop();
                 $('.file-upload-filename').text(fileName).css('color', 'white');
             });
         });
 
-        // 회원정보 수정 활성화
         function enableEdit() {
         document.querySelectorAll('.info input').forEach(input => input.disabled = false);
         document.querySelectorAll('.info select').forEach(select => select.disabled = false);
@@ -274,7 +264,6 @@
         document.querySelectorAll('.info input, .info select').forEach(input => input.style.color = 'black');
     }
 
-        // 회원정보 수정 취소
         function cancelEdit() {
         document.querySelectorAll('.info input').forEach(input => input.disabled = true);
         document.querySelectorAll('.info select').forEach(select => select.disabled = true);
@@ -287,7 +276,6 @@
         document.querySelectorAll('.info input:disabled, .info select:disabled').forEach(input => input.style.color = 'white');
     }
 
-        // 회원정보 수정 저장
         function saveEdit() {
             const updateForm = document.getElementById('updateForm');
             document.getElementById('usernameHidden').value = document.getElementById('nickname').value;
@@ -300,14 +288,12 @@
             updateForm.submit();
         }
 
-        // 회원 탈퇴 확인
         function confirmDeletion() {
             if (confirm("정말 회원 탈퇴를 하시겠습니까?")) {
                 window.location.href = 'UserServlet?action=delete&seq=<%= user.getUser_seq() %>';
             }
         }
 
-        // 탭 열기
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
@@ -322,7 +308,6 @@
             evt.currentTarget.className += " active";
         }
 
-    // 댓글 삭제
     function deleteComment(replySeq) {
         if (confirm("정말 이 댓글을 삭제하시겠습니까?")) {
             $.ajax({
@@ -330,13 +315,10 @@
                 type: 'POST',
                 data: { action: 'deleteComment', replySeq: replySeq },
                 success: function(response) {
-                    // 성공적으로 삭제되었을 때의 처리
                     console.log('댓글이 삭제되었습니다.');
-                    // 삭제된 댓글을 화면에서 제거
                     $('#reply-' + replySeq).remove();
                 },
                 error: function(error) {
-                    // 삭제에 실패했을 때의 처리
                     console.error('댓글 삭제에 실패했습니다:', error);
                 }
             });
@@ -377,7 +359,7 @@
             <nav class="main-menu">
                 <ul>
                     <li><a href="index.jsp">Home</a></li>
-                    <li><a href="document.html">Document</a></li>
+                    <li><a href="document.jsp">Document</a></li>
                     <li><a href="pageinfo.html">PageInfo</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <c:if test="${user != null}">
@@ -407,7 +389,7 @@
                             <div id="reply-${reply.reply_seq}">
                                 <p>댓글 <c:out value="${reply.reply_seq}" />: <c:out value="${reply.reply}" />
                                     <span class="comment-buttons">
-                                        <button class="btn" onclick="moveComment(${reply.reply_seq})">이동</button>
+                                         <button class="btn" onclick="window.location.href='GameServlet?webGLName=<c:out value="${reply.webGL}" />'">이동</button>
                                         <button class="btn btn-danger" onclick="deleteComment(${reply.reply_seq})">삭제</button>
                                     </span>
                                 </p>

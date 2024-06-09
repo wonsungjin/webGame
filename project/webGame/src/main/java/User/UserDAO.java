@@ -137,14 +137,12 @@ public class UserDAO {
         try (Connection conn = new MyOracleConnection().myOracleDataSource().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            // 파라미터 설정
             pstmt.setString(1, uvo.getUsername());
             pstmt.setString(2, uvo.getPassword());
             pstmt.setString(3, uvo.getUseremail());
             pstmt.setString(4, uvo.getUserid());
             pstmt.setInt(5, uvo.getUser_seq());
 
-            // 쿼리 실행 및 결과 확인
             updateRows = pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

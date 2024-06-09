@@ -13,10 +13,10 @@ import lombok.ToString;
 @ToString
 public class GameTableVO {
 	private String webGL;
-    private String gameName;
-    private String contents;
-    private int grade;
-    private String created_date;
-    private String updated_date;
-    private int user_seq;
+	private String gameName;
+	private String contents;
+	private int grade;
+	private String created_date;
+	private String updated_date;
+	private int user_seq;
 }
