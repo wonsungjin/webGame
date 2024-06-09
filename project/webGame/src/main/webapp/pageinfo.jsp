@@ -4,9 +4,6 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ page import="User.UserVO"%>
 <%@ page import="javax.servlet.http.HttpSession"%>
-<%@ page import="java.io.File"%>
-<%@ page import="java.util.ArrayList"%>
-<%@ page import="java.util.List"%>
 
 <%
 HttpSession currentSession = request.getSession(false);
@@ -18,10 +15,10 @@ if (currentSession != null) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Game Warrior Template</title>
+<title>Developer Information</title>
 <meta charset="UTF-8">
-<meta name="description" content="Game Warrior Template">
-<meta name="keywords" content="warrior, game, creative, html">
+<meta name="description" content="Developer Information">
+<meta name="keywords" content="developer, info, page">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- 파비콘 -->
 <link href="img/favicon.ico" rel="shortcut icon" />
@@ -34,7 +31,6 @@ if (currentSession != null) {
 <!-- 스타일시트 -->
 <link rel="stylesheet" href="css/bootstrap.min.css" />
 <link rel="stylesheet" href="css/font-awesome.min.css" />
-<link rel="stylesheet" href="css/owl.carousel.css" />
 <link rel="stylesheet" href="css/style.css" />
 <link rel="stylesheet" href="css/animate.css" />
 
@@ -127,14 +123,17 @@ body {
 	background-color: #555;
 	color: white;
 }
+
+.info-content {
+	background-color: rgba(0, 0, 0, 0.8); /* 검정색 배경과 약간의 투명도 */
+	width: 75%; /* 가로 3/4 */
+	padding: 20px;
+	box-sizing: border-box; /* 패딩을 포함한 박스 크기 */
+	color: white; /* 텍스트 색상 */
+}
 </style>
 </head>
 <body>
-	<!-- 페이지 프리로더 -->
-	<div id="preloder">
-		<div class="loader"></div>
-	</div>
-
 	<!-- 헤더 섹션 -->
 	<header class="header-section">
 		<div class="container">
@@ -182,69 +181,24 @@ body {
 
 	<!-- 검정색 탭을 포함하는 컨텐츠 래퍼 -->
 	<div class="content-wrapper">
-		<div class="black-tab">
-			<div class="buttons">
-				<button id="userBtn" onclick="showContent('userContent')">User</button>
-				<button id="developerBtn" onclick="showContent('developerContent')">Developer</button>
-			</div>
-			<div id="userContent" class="tab-content active">
-				<p style="color: white">1: register and Log in</p>
-				<img src="img/1.JPG" alt="Step 1 Image">
-				<p style="color: white">2: You can play games or edit your personal information.</p>
-				<img src="img/6.JPG" alt="Step 6 Image">
-				<p style="color: white">3: Enjoy the game!</p>
-				<img src="img/7.JPG" alt="Step 7 Image">
-				<p style="color: white">3: Please leave a rating and review for the game.</p>
-				<img src="img/8.JPG" alt="Step 8 Image">
-				
-			</div>
-			<div id="developerContent" class="tab-content">
-				<p style="color: white">1: You must log in to use our site.</p>
-				<img src="img/1.JPG" alt="Step 1 Image">
-				<p style="color: white">2: Register the webgl version build
-					files of the game to be registered as compressed files.</p>
-				<img src="img/2.JPG" alt="Step 2 Image">
-				<p style="color: white">3: Enter the name and description of the
-					game you want to register and attach an image to be registered as a
-					thumbnail. However, the name of the attached image file must be the
-					same as the game's build file name.</p>
-				<img src="img/3.JPG" alt="Step 3 Image">
-				<p style="color: white">4: How to use our DB</p><br>
-				<p style="color: white">4-1 form data : You can create a script to send the form and send it in form data format when the game ends or when you want to save it.</p>
-				<img src="img/4-1.JPG" alt="Step 4-1 Image">
-				<p style="color: white">4: How to use our DB</p><br>
-				<p style="color: white">4-2 json data : You can write a script and transmit data in json format.</p>
-				<img src="img/4-2.JPG" alt="Step 4-2 Image">
-				<p style="color: white">5: How to use our DB</p><br>
-				<p style="color: white">5 get json data : You can write a script and receive data in json format from the server.</p>
-				<img src="img/5.JPG" alt="Step 5 Image">
-			</div>
+		<div class="info-content">
+			<h1>Developer Information</h1>
+			<p>
+				GitHub: <a href="https://github.com/yourusername" target="_blank">https://github.com/yourusername</a>
+			</p>
+			<p>
+				Blog: <a href="https://yourblog.com" target="_blank">https://yourblog.com</a>
+			</p>
+			<p>Project Overview: This project is a web-based game platform
+				that allows users to register and play WebGL games.</p>
 		</div>
 	</div>
 
+	<!-- 프리로더 제거 스크립트 -->
 	<script>
 		window.addEventListener('load', function() {
 			document.getElementById('preloder').style.display = 'none';
 		});
-
-		function showContent(contentId) {
-			var contents = document.querySelectorAll('.tab-content');
-			var buttons = document.querySelectorAll('.buttons button');
-			contents.forEach(function(content) {
-				content.classList.remove('active');
-			});
-			buttons.forEach(function(button) {
-				button.classList.remove('active');
-			});
-			document.getElementById(contentId).classList.add('active');
-			var btn = document.querySelector(`#${contentId}Btn`);
-			if (btn) {
-				btn.classList.add('active');
-			}
-		}
-
-		// 기본적으로 User 버튼을 활성화
-		document.getElementById('userBtn').classList.add('active');
 	</script>
 </body>
 </html>

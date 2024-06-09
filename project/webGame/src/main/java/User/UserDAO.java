@@ -101,6 +101,38 @@ public class UserDAO {
 
         return uvo;
     }
+    
+    /**
+     * 모든 사용자의 정보를 조회
+     *
+     * @param user_seq 사용자 고유 번호
+     * @return 사용자 정보가 담긴 UserVO 객체
+     */
+    public List<UserVO> userSelectAll() throws SQLException {
+        List<UserVO> userList = new ArrayList<>();
+        String sql = "SELECT * FROM users"; // 적절한 SQL 쿼리를 작성합니다.
+
+        try (Connection conn = new MyOracleConnection().myOracleDataSource().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                UserVO user = new UserVO();
+                user.setUser_seq(rs.getInt("user_seq"));
+                user.setUserid(rs.getString("userid"));
+                user.setUsername(rs.getString("username"));
+                user.setUseremail(rs.getString("useremail"));
+                user.setCreated_date(rs.getString("created_date"));
+                user.setUpdated_date(rs.getString("updated_date"));
+                userList.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        return userList;
+    }
 
     /**
      * 특정 사용자의 정보를 삭제합니다.

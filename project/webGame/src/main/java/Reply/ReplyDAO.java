@@ -223,7 +223,7 @@ public class ReplyDAO {
 					+ " gt.grade AS game_grade, "
 					+ " gt.created_date AS game_created_date, "
 					+ " gt.updated_date AS game_updated_date,"
-					+ " u.userid, u.username, u.password, u.email, "
+					+ " u.userid, u.username, u.password, u.useremail, "
 					+ " u.created_date AS user_created_date, "
 					+ " u.updated_date AS user_updated_date"
 					+ " from reply r,gametable gt,users u "

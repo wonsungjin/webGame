@@ -65,7 +65,7 @@ String webGLName = (String) request.getAttribute("KEY_webGLName");
                 <ul>
                     <li><a href="index.jsp">Home</a></li>
                     <li><a href="document.jsp">Document</a></li>
-                    <li><a href="pageinfo.html">PageInfo</a></li>
+                    <li><a href="pageinfo.jsp">PageInfo</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <% if (uvo != null) { %>
                         <li><a href="UserServlet?action=mypage">mypage</a></li>
