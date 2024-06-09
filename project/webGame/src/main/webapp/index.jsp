@@ -49,6 +49,7 @@ if (currentSession != null) {
 		<div class="loader"></div>
 	</div>
 
+
 	<!-- 헤더 섹션 -->
 	<header class="header-section">
 		<div class="container">
@@ -105,7 +106,6 @@ if (currentSession != null) {
 	<!-- 헤더 섹션 끝 -->
 
 
-
 	<!-- 페이지 섹션 -->
 	<div class="page-section community-page set-bg"
 		data-setbg="img/Diablo-3.jpg">
@@ -147,7 +147,7 @@ $(document).ready(function() {
                 gameListHtml += '<div class="col-md-6" style="color: black;">' +
                 '<div class="review-item" style="background-color: transparent; border: 1px solid black;">' +
                 '<img class="review-cover" src="img/gameLogo/' + webGL + '.png" data-webgl="' + webGL + '" style="width: 100%; height: 400px; object-fit: cover;">' +
-                '<div class="review-text" style="color: white; border: 1px solid black; background-color: transparent;">' +
+                '<div class="review-text" style="color: white; border: 1px solid white; background-color: black;">' +
                 '<h4 style="color: white;">' + gameName + '</h4>' +
                 '<div class="rating" style="color: white; background-color: transparent;">' +
                 '<i class="fa fa-star"></i>' +
@@ -156,8 +156,8 @@ $(document).ready(function() {
                 '<i class="fa fa-star"></i>' +
                 '<i class="fa fa-star is-fade"></i>' +
                 '</div>' +
-                '<div style="color: black; background-color: transparent;">' + 
-                '<p style="margin: 0; font-size: 18px;">' + contents + '</p>' +
+                '<div style="background-color: black;">' + 
+                '<p style="margin: 0; font-size: 18px; color: white;">' + contents + '</p>' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
