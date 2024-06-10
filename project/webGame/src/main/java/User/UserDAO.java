@@ -19,7 +19,7 @@ public class UserDAO {
      */
     public int userInsert(UserVO uvo) {
         int insertRows = 0;
-        String sql = "INSERT INTO users (user_seq, userid, username, password, email, created_date, updated_date) " +
+        String sql = "INSERT INTO users (user_seq, userid, username, password, useremail, created_date, updated_date) " +
                      "VALUES (users_seq.NEXTVAL, ?, ?, ?, ?, SYSDATE, SYSDATE)";
 
         try (Connection conn = new MyOracleConnection().myOracleDataSource().getConnection();
@@ -56,7 +56,7 @@ public class UserDAO {
                 uvo.setUserid(rs.getString("userid"));
                 uvo.setUsername(rs.getString("username"));
                 uvo.setPassword(rs.getString("password"));
-                uvo.setUseremail(rs.getString("email"));
+                uvo.setUseremail(rs.getString("useremail"));
                 uvo.setCreated_date(rs.getString("created_date"));
                 uvo.setUpdated_date(rs.getString("updated_date"));
                 userList.add(uvo);
@@ -90,7 +90,7 @@ public class UserDAO {
                     uvo.setUserid(rs.getString("userid"));
                     uvo.setUsername(rs.getString("username"));
                     uvo.setPassword(rs.getString("password"));
-                    uvo.setUseremail(rs.getString("email"));
+                    uvo.setUseremail(rs.getString("useremail"));
                     uvo.setCreated_date(rs.getString("created_date"));
                     uvo.setUpdated_date(rs.getString("updated_date"));
                 }
@@ -164,7 +164,7 @@ public class UserDAO {
      */
     public int userUpdate(UserVO uvo) {
         int updateRows = 0;
-        String sql = "UPDATE users SET username = ?, password = ?, email = ?, userid = ?, updated_date = SYSDATE WHERE user_seq = ?";
+        String sql = "UPDATE users SET username = ?, password = ?, useremail = ?, userid = ?, updated_date = SYSDATE WHERE user_seq = ?";
 
         try (Connection conn = new MyOracleConnection().myOracleDataSource().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -207,7 +207,7 @@ public class UserDAO {
                     user.setUserid(rs.getString("userid"));
                     user.setUsername(rs.getString("username"));
                     user.setPassword(rs.getString("password"));
-                    user.setUseremail(rs.getString("email"));
+                    user.setUseremail(rs.getString("useremail"));
                     user.setCreated_date(rs.getString("created_date"));
                     user.setUpdated_date(rs.getString("updated_date"));
                 }
@@ -281,7 +281,7 @@ public class UserDAO {
      */
     public boolean checkDuplicateEmail(String email) {
         boolean isDuplicate = false;
-        String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
+        String sql = "SELECT COUNT(*) FROM users WHERE useremail = ?";
 
         try (Connection conn = new MyOracleConnection().myOracleDataSource().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

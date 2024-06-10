@@ -236,6 +236,7 @@
                 	    contentType: false,
                 	    success: function(response) {
                 	        console.log(response); // 성공 시 응답 출력
+                	       	
                 	    },
                 	    error: function(xhr, status, error) {
                 	        console.error(xhr.responseText); // 에러 메시지 출력
