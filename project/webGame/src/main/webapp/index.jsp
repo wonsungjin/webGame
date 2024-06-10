@@ -147,7 +147,7 @@ $(document).ready(function() {
                 gameListHtml += '<div class="col-md-6" style="color: black;">' +
                 '<div class="review-item" style="background-color: transparent; border: 1px solid black;">' +
                 '<img class="review-cover" src="img/gameLogo/' + webGL + '.png" data-webgl="' + webGL + '" style="width: 100%; height: 400px; object-fit: cover;">' +
-                '<div class="review-text" style="color: white; border: 1px solid white; background-color: black;">' +
+                '<div class="review-text" style="color: white; border: 1px solid black; background-color: rgba(0, 0, 0, 0.5);">' +
                 '<h4 style="color: white;">' + gameName + '</h4>' +
                 '<div class="rating" style="color: white; background-color: transparent;">' +
                 '<i class="fa fa-star"></i>' +
@@ -156,12 +156,11 @@ $(document).ready(function() {
                 '<i class="fa fa-star"></i>' +
                 '<i class="fa fa-star is-fade"></i>' +
                 '</div>' +
-                '<div style="background-color: black;">' + 
-                '<p style="margin: 0; font-size: 18px; color: white;">' + contents + '</p>' +
-                '</div>' +
+                '<p style="margin: 0; font-size: 18px; color: white;">' + contents + '</p>' + 
                 '</div>' +
                 '</div>' +
                 '</div>';
+
 
             });
 
